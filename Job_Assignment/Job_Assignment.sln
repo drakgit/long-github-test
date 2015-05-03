@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C# Express 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Job_Assignment", "Job_Assignment\Job_Assignment.csproj", "{CF72FDE3-879E-4F23-A4BB-C723354D8DDB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterDatabase", "MasterDatabase\MasterDatabase.csproj", "{09A253EB-222E-4A20-BF5F-2431176B4B6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataGridViewAutoFilter", "DataGridViewAutoFilter\DataGridViewAutoFilter.csproj", "{5A4B4B14-D3B5-4D54-80EC-0877C1E6E73A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CF72FDE3-879E-4F23-A4BB-C723354D8DDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF72FDE3-879E-4F23-A4BB-C723354D8DDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF72FDE3-879E-4F23-A4BB-C723354D8DDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF72FDE3-879E-4F23-A4BB-C723354D8DDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09A253EB-222E-4A20-BF5F-2431176B4B6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09A253EB-222E-4A20-BF5F-2431176B4B6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09A253EB-222E-4A20-BF5F-2431176B4B6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09A253EB-222E-4A20-BF5F-2431176B4B6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A4B4B14-D3B5-4D54-80EC-0877C1E6E73A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A4B4B14-D3B5-4D54-80EC-0877C1E6E73A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A4B4B14-D3B5-4D54-80EC-0877C1E6E73A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A4B4B14-D3B5-4D54-80EC-0877C1E6E73A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

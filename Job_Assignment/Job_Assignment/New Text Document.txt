@@ -1,0 +1,1 @@
+server=.;database=JOB_ASSIGNMENT_DB;Integrated Security = TRUE
