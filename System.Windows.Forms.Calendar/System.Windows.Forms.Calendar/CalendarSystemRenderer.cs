@@ -113,22 +113,22 @@ namespace System.Windows.Forms.Calendar
             }
         }
 
-        public override void OnDrawDayTop(CalendarRendererDayEventArgs e)
-        {
-            bool s = e.Day.DayTop.Selected;
+        //public override void OnDrawDayTop(CalendarRendererDayEventArgs e)
+        //{
+        //    bool s = e.Day.DayTop.Selected;
 
-            using (Brush b = new SolidBrush( s ? ColorTable.DayTopSelectedBackground : ColorTable.DayTopBackground))
-            {
-                e.Graphics.FillRectangle(b, e.Day.DayTop.Bounds);
-            }
+        //    using (Brush b = new SolidBrush( s ? ColorTable.DayTopSelectedBackground : ColorTable.DayTopBackground))
+        //    {
+        //        e.Graphics.FillRectangle(b, e.Day.DayTop.Bounds);
+        //    }
 
-            using (Pen p = new Pen(s ? ColorTable.DayTopSelectedBorder : ColorTable.DayTopBorder))
-            {
-                e.Graphics.DrawRectangle(p, e.Day.DayTop.Bounds);
-            }
+        //    using (Pen p = new Pen(s ? ColorTable.DayTopSelectedBorder : ColorTable.DayTopBorder))
+        //    {
+        //        e.Graphics.DrawRectangle(p, e.Day.DayTop.Bounds);
+        //    }
 
-            base.OnDrawDayTop(e);
-        }
+        //    base.OnDrawDayTop(e);
+        //}
 
         public override void OnDrawDayHeaderBackground(CalendarRendererDayEventArgs e)
         {

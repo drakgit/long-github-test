@@ -623,7 +623,7 @@ namespace System.Windows.Forms.Calendar
                 {
                     CalendarDay day = Calendar.Days[i];
                     day.SetBounds(new Rectangle(curLeft, curTop, dayWidth, dayHeight));
-                    day.DayTop.SetBounds(new Rectangle(curLeft, day.HeaderBounds.Bottom, dayWidth, DayTopHeight));
+                    //day.DayTop.SetBounds(new Rectangle(curLeft, day.HeaderBounds.Bottom, dayWidth, DayTopHeight));
                     curLeft += dayWidth + 1;
                     //int k = 0;
                     int utop = day.BodyBounds.Top + Calendar.TimeUnitsOffset * TimeScaleUnitHeight;
@@ -716,19 +716,19 @@ namespace System.Windows.Forms.Calendar
                     {
                         #region Among day tops
 
-                        CalendarDay dayStart = item.DayStart;
-                        CalendarDay dayEnd = item.DayEnd;
+                        //CalendarDay dayStart = item.DayStart;
+                        //CalendarDay dayEnd = item.DayEnd;
                             
-                        if (dayStart == null) dayStart = Calendar.Days[0];
-                        if (dayEnd == null) dayEnd = Calendar.Days[Calendar.Days.Length - 1];
+                        //if (dayStart == null) dayStart = Calendar.Days[0];
+                        //if (dayEnd == null) dayEnd = Calendar.Days[Calendar.Days.Length - 1];
 
-                        for (int i = dayStart.Index; i <= dayEnd.Index; i++)
-                        {
-                            item.AddTopPassing(Calendar.Days[i].DayTop);
-                            Calendar.Days[i].DayTop.AddPassingItem(item);
-                        }
+                        //for (int i = dayStart.Index; i <= dayEnd.Index; i++)
+                        //{
+                        //    item.AddTopPassing(Calendar.Days[i].DayTop);
+                        //    Calendar.Days[i].DayTop.AddPassingItem(item);
+                        //}
 
-                        item.SetBounds(Rectangle.FromLTRB(dayStart.DayTop.Bounds.Left, 0, dayEnd.DayTop.Bounds.Right, 1));
+                        //item.SetBounds(Rectangle.FromLTRB(dayStart.DayTop.Bounds.Left, 0, dayEnd.DayTop.Bounds.Right, 1));
 
                         #endregion
                     }
@@ -764,62 +764,62 @@ namespace System.Windows.Forms.Calendar
                 #endregion
 
                 #region Items on DayTops
-                foreach (CalendarDay day in Calendar.Days)
-                {
-                    maxItemsOnDayTop = Math.Max(maxItemsOnDayTop, day.DayTop.PassingItems.Count);
-                }
+                //foreach (CalendarDay day in Calendar.Days)
+                //{
+                //    maxItemsOnDayTop = Math.Max(maxItemsOnDayTop, day.DayTop.PassingItems.Count);
+                //}
 
-                int[,] tmatix = new int[Calendar.Days.Length, maxItemsOnDayTop];
+                //int[,] tmatix = new int[Calendar.Days.Length, maxItemsOnDayTop];
 
-                if (tmatix.GetLength(1) > 0)
-                {
-                    foreach (CalendarItem item in Calendar.Items)
-                    {
-                        if (!item.IsOnDayTop) continue;
+                //if (tmatix.GetLength(1) > 0)
+                //{
+                //    foreach (CalendarItem item in Calendar.Items)
+                //    {
+                //        if (!item.IsOnDayTop) continue;
 
-                        item.TopsPassing.Sort(CompareTops);
+                //        item.TopsPassing.Sort(CompareTops);
 
-                        int topStart = item.TopsPassing[0].Day.Index;
-                        int topEnd = item.TopsPassing[item.TopsPassing.Count - 1].Day.Index;
+                //        int topStart = item.TopsPassing[0].Day.Index;
+                //        int topEnd = item.TopsPassing[item.TopsPassing.Count - 1].Day.Index;
 
-                        PlaceInMatrix(ref tmatix, Calendar.Items.IndexOf(item) + 1, topStart, topEnd);
-                    }
+                //        PlaceInMatrix(ref tmatix, Calendar.Items.IndexOf(item) + 1, topStart, topEnd);
+                //    }
 
-                    int dayTopsHeight = tmatix.GetLength(1) * StandardItemHeight + DayTopMinHeight;
+                //    int dayTopsHeight = tmatix.GetLength(1) * StandardItemHeight + DayTopMinHeight;
 
-                    if (DayTopHeight != dayTopsHeight)
-                    {
-                        DayTopHeight = dayTopsHeight;
-                        alldaychanged = true;
-                    }
+                //    if (DayTopHeight != dayTopsHeight)
+                //    {
+                //        DayTopHeight = dayTopsHeight;
+                //        alldaychanged = true;
+                //    }
 
-                    int itemHeight = StandardItemHeight;//Convert.ToInt32(Math.Floor(Convert.ToSingle(DayTopHeight) / Convert.ToSingle(tmatix.GetLength(1))));
+                //    int itemHeight = StandardItemHeight;//Convert.ToInt32(Math.Floor(Convert.ToSingle(DayTopHeight) / Convert.ToSingle(tmatix.GetLength(1))));
 
-                    foreach (CalendarItem item in Calendar.Items)
-                    {
-                        if (!item.IsOnDayTop) continue;
+                //    foreach (CalendarItem item in Calendar.Items)
+                //    {
+                //        if (!item.IsOnDayTop) continue;
 
-                        int index = Calendar.Items.IndexOf(item);
+                //        int index = Calendar.Items.IndexOf(item);
 
-                        int top, left;
-                        FindInMatrix(tmatix, index + 1, out left, out top);
+                //        int top, left;
+                //        FindInMatrix(tmatix, index + 1, out left, out top);
 
-                        Rectangle r = item.Bounds;
-                        r.Y = Calendar.Days[0].DayTop.Bounds.Top + top * itemHeight;
-                        r.Height = itemHeight;
-                        item.SetBounds(r);
-                        item.FirstAndLastRectangleGapping();
-                    }
-                }
-                if (alldaychanged)
-                    PerformLayout(false);
+                //        Rectangle r = item.Bounds;
+                //        r.Y = Calendar.Days[0].DayTop.Bounds.Top + top * itemHeight;
+                //        r.Height = itemHeight;
+                //        item.SetBounds(r);
+                //        item.FirstAndLastRectangleGapping();
+                //    }
+                //}
+                //if (alldaychanged)
+                //    PerformLayout(false);
                 #endregion
 
                 foreach (CalendarDay day in Calendar.Days)
                 {
                     #region Create groups
                     
-                    maxItemsOnDayTop = Math.Max(maxItemsOnDayTop, day.DayTop.PassingItems.Count);
+                  //  maxItemsOnDayTop = Math.Max(maxItemsOnDayTop, day.DayTop.PassingItems.Count);
 
                     List<List<CalendarItem>> groups = new List<List<CalendarItem>>();
                     List<CalendarItem> items = new List<CalendarItem>(day.ContainedItems);

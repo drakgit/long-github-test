@@ -884,12 +884,12 @@ namespace System.Windows.Forms.Calendar
                 {
                     if (DaysMode == CalendarDaysMode.Expanded)
                     {
-                        if (Days[i].DayTop.Bounds.Contains(p))
-                        {
-                            return Days[i].DayTop;
-                        }
-                        else
-                        {
+                        //if (Days[i].DayTop.Bounds.Contains(p))
+                        //{
+                        //    return Days[i].DayTop;
+                        //}
+                        //else
+                        //{
                             for (int j = 0; j < Days[i].TimeUnits.Length; j++)
                             {
                                 if (Days[i].TimeUnits[j].Visible &&
@@ -898,7 +898,7 @@ namespace System.Windows.Forms.Calendar
                                     return Days[i].TimeUnits[j];
                                 }
                             }
-                        }
+                        //}
 
                         return Days[i];
                     }
@@ -1369,14 +1369,14 @@ namespace System.Windows.Forms.Calendar
             }
             else if (topStart != null && topEnd != null)
             {
-                for (int i = topStart.Day.Index; i <= topEnd.Day.Index ; i++)
-                {
-                    CalendarDayTop top = Days[i].DayTop;
+                //for (int i = topStart.Day.Index; i <= topEnd.Day.Index ; i++)
+                //{
+                //    CalendarDayTop top = Days[i].DayTop;
 
-                    top.SetSelected(true);
-                    GrowSquare(top.Bounds);
-                    _selectedElements.Add(top);
-                }
+                //    top.SetSelected(true);
+                //    GrowSquare(top.Bounds);
+                //    _selectedElements.Add(top);
+                //}
             }
             else if (dayStart != null && dayEnd != null)
             {

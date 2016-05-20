@@ -25,8 +25,8 @@ namespace System.Windows.Forms.Calendar
         #region Fields
         private List<CalendarItem> _containedItems;
         private Calendar _calendar;
-        private DateTime _date;
-        private CalendarDayTop _dayTop;
+     //   private DateTime _date;
+     //   private CalendarDayTop _dayTop;
         private int _index;
         private bool _overflowStart;
         private bool _overflowEnd;
@@ -48,8 +48,8 @@ namespace System.Windows.Forms.Calendar
         {
             _containedItems = new List<CalendarItem>();
             _calendar = calendar;
-            _dayTop = new CalendarDayTop(this);
-            _date = date;
+      //      _dayTop = new CalendarDayTop(this);
+       //     _date = date;
             _index = index;
 
             UpdateUnits();
@@ -70,10 +70,10 @@ namespace System.Windows.Forms.Calendar
         /// <summary>
         /// Gets the DayTop of the day, the place where multi-day and all-day items are placed
         /// </summary>
-        public CalendarDayTop DayTop
-        {
-            get { return _dayTop; }
-        }
+        //public CalendarDayTop DayTop
+        //{
+        //    get { return _dayTop; }
+        //}
 
         /// <summary>
         /// Gets the bounds of the body of the day (where time-based CalendarItems are placed)
@@ -82,17 +82,17 @@ namespace System.Windows.Forms.Calendar
         {
             get 
             {
-                return Rectangle.FromLTRB(Bounds.Left, DayTop.Bounds.Bottom, Bounds.Right, Bounds.Bottom);
+                return Rectangle.FromLTRB(Bounds.Left, HeaderBounds.Bottom, Bounds.Right, Bounds.Bottom);
             }
         }
 
         /// <summary>
         /// Gets the date this day represents
         /// </summary>
-        public override DateTime Date
-        {
-            get { return _date; }
-        }
+        //public override DateTime Date
+        //{
+        //    get { return _date; }
+        //}
 
         /// <summary>
         /// Gets the bounds of the header of the day
