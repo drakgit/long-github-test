@@ -61,7 +61,7 @@ namespace System.Windows.Forms.Calendar
             {
                 if (_date.Equals(DateTime.MinValue))
                 {
-                    _date = new DateTime(Day.Date.Year, Day.Date.Month, Day.Date.Day, Hours, Minutes, 0);
+                   // _date = new DateTime(Day.Date.Year, Day.Date.Month, Day.Date.Day, Hours, Minutes, 0);
                 }
 
                 return _date;

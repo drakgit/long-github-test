@@ -219,6 +219,8 @@ namespace System.Windows.Forms.Calendar
         private Rectangle _selectedElementSquare;
         private CalendarItem itemOnState;
         private bool itemOnStateChanged;
+        private List<LineInfo> lines;
+
         #endregion
 
         #region Ctor
@@ -247,10 +249,9 @@ namespace System.Windows.Forms.Calendar
                 new CalendarHighlightRange( DayOfWeek.Friday, new TimeSpan(8,0,0), new TimeSpan(17,0,0)),
             };
 
-            _timeScale = CalendarTimeScale.ThirtyMinutes;
-            SetViewRange(DateTime.Now, DateTime.Now.AddDays(2));
-            
-
+            _timeScale = CalendarTimeScale.FifteenMinutes;
+            //SetViewRange(DateTime.Now, DateTime.Now.AddDays(2));
+            _daysMode = CalendarDaysMode.Expanded;
             _itemsDateFormat = "dd/MMM";
             _itemsTimeFormat = "hh:mm tt";
             _allowItemEdit = true;
@@ -262,6 +263,28 @@ namespace System.Windows.Forms.Calendar
         #endregion
 
         #region Properties
+
+        public List<LineInfo> Lines
+        {
+            get { return lines; }
+            set
+            {
+                ClearItems();
+                lines = value;
+                _days = new CalendarDay[lines.Count];
+
+                for (int i = 0; i < _days.Length; i++)
+                {
+                    _days[i] = new CalendarDay(this, lines[i].LineId, i);
+                }
+
+                UpdateHighlights();
+                Renderer.PerformLayout();
+                Invalidate();
+                ReloadItems();
+
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating if the control let's the user create new items.
@@ -560,37 +583,37 @@ namespace System.Windows.Forms.Calendar
         /// <summary>
         /// Gets or sets the end date-time of the current view.
         /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public DateTime ViewEnd
-        {
-            get { return _viewEnd; }
-            set 
-            {
-                _viewEnd = value.Date.Add(new TimeSpan(23, 59, 59));
-                ClearItems();
-                UpdateDaysAndWeeks();
-                Renderer.PerformLayout();
-                Invalidate();
-                ReloadItems();
-            }
-        }
+        //[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        //public DateTime ViewEnd
+        //{
+        //    get { return _viewEnd; }
+        //    set 
+        //    {
+        //        _viewEnd = value.Date.Add(new TimeSpan(23, 59, 59));
+        //        ClearItems();
+        //        UpdateDaysAndWeeks();
+        //        Renderer.PerformLayout();
+        //        Invalidate();
+        //        ReloadItems();
+        //    }
+        //}
 
-        /// <summary>
-        /// Gets or sets the start date-time of the current view.
-        /// </summary>
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
-        public DateTime ViewStart
-        {
-            get { return _viewStart; }
-            set { 
-                _viewStart = value.Date;
-                ClearItems();
-                UpdateDaysAndWeeks();
-                Renderer.PerformLayout();
-                Invalidate();
-                ReloadItems();
-            }
-        }
+        ///// <summary>
+        ///// Gets or sets the start date-time of the current view.
+        ///// </summary>
+        //[DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
+        //public DateTime ViewStart
+        //{
+        //    get { return _viewStart; }
+        //    set { 
+        //        _viewStart = value.Date;
+        //        ClearItems();
+        //        UpdateDaysAndWeeks();
+        //        Renderer.PerformLayout();
+        //        Invalidate();
+        //        ReloadItems();
+        //    }
+        //}
 
         /// <summary>
         /// Gets the weeks currently visible on the calendar, if <see cref="DaysMode"/> is <see cref="CalendarDaysMode.Short"/>
@@ -666,13 +689,13 @@ namespace System.Windows.Forms.Calendar
         /// <param name="editMode">If <c>true</c> activates the edit mode so user can edit the text of the item.</param>
         public void CreateItemOnSelection(string itemText, bool editMode)
         {
-            if (SelectedElementEnd == null || SelectedElementStart == null) return;
-
             CalendarTimeScaleUnit unitEnd = SelectedElementEnd as CalendarTimeScaleUnit;
             CalendarDayTop dayTop = SelectedElementEnd as CalendarDayTop;
             CalendarDay day = SelectedElementEnd as CalendarDay;
+            if (unitEnd == null || dayTop == null || day == null) return;
+
             TimeSpan duration = unitEnd != null ? unitEnd.Duration : new TimeSpan(23, 59, 59);
-            CalendarItem item = new CalendarItem(this);
+            CalendarItem item = new CalendarItem(this, day.LineId);
 
             DateTime dstart = SelectedElementStart.Date;
             DateTime dend = SelectedElementEnd.Date;
@@ -786,13 +809,13 @@ namespace System.Windows.Forms.Calendar
         /// </summary>
         /// <param name="d">Date to find day</param>
         /// <returns><see cref="CalendarDay"/> object that matches the date, <c>null</c> if day was not found.</returns>
-        public CalendarDay FindDay(DateTime d)
+        public CalendarDay FindDay(string lineId)
         {
             if (Days == null) return null;
 
             for (int i = 0; i < Days.Length; i++)
             {
-                if (Days[i].Date.Date.Equals(d.Date.Date))
+                if (Days[i].LineId == lineId )
                 {
                     return Days[i];
                 }
@@ -974,21 +997,21 @@ namespace System.Windows.Forms.Calendar
         /// </summary>
         /// <param name="dateStart">Start date of view</param>
         /// <param name="dateEnd">End date of view</param>
-        public void SetViewRange(DateTime dateStart, DateTime dateEnd)
-        {
-            _viewStart = dateStart.Date;
-            ViewEnd = dateEnd;
-        }
+        //public void SetViewRange(DateTime dateStart, DateTime dateEnd)
+        //{
+        //    _viewStart = dateStart.Date;
+        //    ViewEnd = dateEnd;
+        //}
 
         /// <summary>
         /// Returns a value indicating if the view range intersects the specified date range.
         /// </summary>
         /// <param name="dateStart"></param>
         /// <param name="dateEnd"></param>
-        public bool ViewIntersects(DateTime dateStart, DateTime dateEnd)
-        {
-            return DateIntersects(ViewStart, ViewEnd, dateStart, dateEnd);
-        }
+        //public bool ViewIntersects(DateTime dateStart, DateTime dateEnd)
+        //{
+        //    return DateIntersects(ViewStart, ViewEnd, dateStart, dateEnd);
+        //}
 
         /// <summary>
         /// Returns a value indicating if the view range intersect the date range of the specified item
@@ -996,7 +1019,16 @@ namespace System.Windows.Forms.Calendar
         /// <param name="item"></param>
         public bool ViewIntersects(CalendarItem item)
         {
-            return ViewIntersects(item.StartDate, item.EndDate);
+            //return ViewIntersects(item.StartDate, item.EndDate);
+            foreach (LineInfo info in lines)
+            {
+                if (info.LineId == item.LineId)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         #endregion
@@ -1098,7 +1130,7 @@ namespace System.Windows.Forms.Calendar
         /// </summary>
         private void ReloadItems()
         {
-            OnLoadItems(new CalendarLoadEventArgs(this, ViewStart, ViewEnd));
+            //OnLoadItems(new CalendarLoadEventArgs(this, ViewStart, ViewEnd));
         }
 
         /// <summary>
@@ -1142,11 +1174,11 @@ namespace System.Windows.Forms.Calendar
         {
             if (delta < 0)
             {
-                SetViewRange(ViewStart.AddDays(7), ViewEnd.AddDays(7));
+                //SetViewRange(ViewStart.AddDays(7), ViewEnd.AddDays(7));
             }
             else
             {
-                SetViewRange(ViewStart.AddDays(-7), ViewEnd.AddDays(-7));
+                //SetViewRange(ViewStart.AddDays(-7), ViewEnd.AddDays(-7));
             }
         }
 
@@ -1252,60 +1284,60 @@ namespace System.Windows.Forms.Calendar
         /// <summary>
         /// Updates the 
         /// </summary>
-        private void UpdateDaysAndWeeks()
-        {
-            TimeSpan span = (new DateTime(ViewEnd.Year, ViewEnd.Month, ViewEnd.Day, 23, 59, 59)).Subtract(ViewStart.Date);
-            int preDays = 0;
-            span = span.Add(new TimeSpan(0,0,0,1,0));
+        //private void UpdateDaysAndWeeks()
+        //{
+        //    TimeSpan span = (new DateTime(ViewEnd.Year, ViewEnd.Month, ViewEnd.Day, 23, 59, 59)).Subtract(ViewStart.Date);
+        //    int preDays = 0;
+        //    span = span.Add(new TimeSpan(0,0,0,1,0));
 
-            if (span.Days < 1 || span.Days > MaximumViewDays )
-            {
-                throw new Exception("Days between ViewStart and ViewEnd should be between 1 and MaximumViewDays");
-            }
+        //    if (span.Days < 1 || span.Days > MaximumViewDays )
+        //    {
+        //        throw new Exception("Days between ViewStart and ViewEnd should be between 1 and MaximumViewDays");
+        //    }
 
-            if (span.Days > MaximumFullDays)
-            {
-                SetDaysMode(CalendarDaysMode.Short);
-                preDays = (new int[] { 0, 1, 2, 3, 4, 5, 6 })[(int)ViewStart.DayOfWeek] - (int)FirstDayOfWeek;
-                span = span.Add(new TimeSpan(preDays, 0, 0, 0));
+        //    if (span.Days > MaximumFullDays)
+        //    {
+        //        SetDaysMode(CalendarDaysMode.Short);
+        //        preDays = (new int[] { 0, 1, 2, 3, 4, 5, 6 })[(int)ViewStart.DayOfWeek] - (int)FirstDayOfWeek;
+        //        span = span.Add(new TimeSpan(preDays, 0, 0, 0));
 
-                while (span.Days % 7 != 0)
-                    span = span.Add(new TimeSpan(1, 0, 0, 0));
-            }
-            else
-            {
-                SetDaysMode(CalendarDaysMode.Expanded);
-            }
+        //        while (span.Days % 7 != 0)
+        //            span = span.Add(new TimeSpan(1, 0, 0, 0));
+        //    }
+        //    else
+        //    {
+        //        SetDaysMode(CalendarDaysMode.Expanded);
+        //    }
 
-            _days = new CalendarDay[span.Days];
+        //    _days = new CalendarDay[span.Days];
 
-            for (int i = 0; i < Days.Length; i++)
-                Days[i] = new CalendarDay(this, ViewStart.AddDays(-preDays + i), i);
+        //    for (int i = 0; i < Days.Length; i++)
+        //        Days[i] = new CalendarDay(this, ViewStart.AddDays(-preDays + i), i);
 
             
-            //Weeks
-            if (DaysMode == CalendarDaysMode.Short)
-            {
-                List<CalendarWeek> weeks = new List<CalendarWeek>();
+        //    //Weeks
+        //    if (DaysMode == CalendarDaysMode.Short)
+        //    {
+        //        List<CalendarWeek> weeks = new List<CalendarWeek>();
 
-                for (int i = 0; i < Days.Length; i++)
-                {
-                    if (Days[i].Date.DayOfWeek == FirstDayOfWeek)
-                    {
-                        weeks.Add(new CalendarWeek(this, Days[i].Date));
-                    }
-                }
+        //        for (int i = 0; i < Days.Length; i++)
+        //        {
+        //            if (Days[i].Date.DayOfWeek == FirstDayOfWeek)
+        //            {
+        //                weeks.Add(new CalendarWeek(this, Days[i].Date));
+        //            }
+        //        }
 
-                _weeks = weeks.ToArray();
-            }
-            else
-            {
-                _weeks = new CalendarWeek[] { };
-            }
+        //        _weeks = weeks.ToArray();
+        //    }
+        //    else
+        //    {
+        //        _weeks = new CalendarWeek[] { };
+        //    }
 
-            UpdateHighlights();
+        //    UpdateHighlights();
             
-        }
+        //}
 
         /// <summary>
         /// Updates the value of the <see cref="CalendarTimeScaleUnit.Highlighted"/> property on the time units of days.

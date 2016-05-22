@@ -25,7 +25,7 @@ namespace System.Windows.Forms.Calendar
         #region Fields
         private List<CalendarItem> _containedItems;
         private Calendar _calendar;
-     //   private DateTime _date;
+        private DateTime _date;
      //   private CalendarDayTop _dayTop;
         private int _index;
         private bool _overflowStart;
@@ -33,7 +33,11 @@ namespace System.Windows.Forms.Calendar
         private bool _overflowStartSelected;
         private bool _overlowEndSelected;
         private CalendarTimeScaleUnit[] _timeUnits;
+        private String _lineId;
+        private String _lineName;
         #endregion
+
+
 
         #region Ctor
 
@@ -43,7 +47,7 @@ namespace System.Windows.Forms.Calendar
         /// <param name="calendar">Calendar this day belongs to</param>
         /// <param name="date">Date of the day</param>
         /// <param name="index">Index of the day on the current calendar's view</param>
-        internal CalendarDay(Calendar calendar, DateTime date, int index)
+        internal CalendarDay(Calendar calendar, String lineId, int index)
             : base(calendar)
         {
             _containedItems = new List<CalendarItem>();
@@ -51,6 +55,7 @@ namespace System.Windows.Forms.Calendar
       //      _dayTop = new CalendarDayTop(this);
        //     _date = date;
             _index = index;
+            _lineId = lineId;
 
             UpdateUnits();
         }
@@ -58,6 +63,27 @@ namespace System.Windows.Forms.Calendar
         #endregion
 
         #region Properties
+
+        public String LineId
+        {
+            get { return _lineId; }
+            set { _lineId = value; }
+        }
+
+        public String LineName
+        {
+            get { return _lineName; }
+            set { _lineName = value; }
+        }
+
+        //public override DateTime Date
+        //{
+        //    get 
+        //    {
+        //        throw new Exception("Not exist date");
+        //        //return _date; 
+        //    }
+        //}
 
         /// <summary>
         /// Gets a list of items contained on the day
@@ -120,13 +146,13 @@ namespace System.Windows.Forms.Calendar
         /// A day may not be specified on the view, but still present to make up a square calendar.
         /// This days should be drawn in a way that indicates it's necessary but unrequested presence.
         /// </remarks>
-        public bool SpecifiedOnView
-        {
-            get 
-            {
-                return Date.CompareTo(Calendar.ViewStart) >= 0 && Date.CompareTo(Calendar.ViewEnd) <= 0;
-            }
-        }
+        //public bool SpecifiedOnView
+        //{
+        //    get 
+        //    {
+        //        return Date.CompareTo(Calendar.ViewStart) >= 0 && Date.CompareTo(Calendar.ViewEnd) <= 0;
+        //    }
+        //}
 
         /// <summary>
         /// Gets the time units contained on the day

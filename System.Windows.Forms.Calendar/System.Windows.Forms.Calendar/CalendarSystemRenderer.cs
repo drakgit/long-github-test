@@ -69,13 +69,13 @@ namespace System.Windows.Forms.Calendar
                     e.Graphics.FillRectangle(b, r); 
                 }
             }
-            else if (e.Day.Date.Month % 2 == 0)
-            {
-                using (Brush b = new SolidBrush(ColorTable.DayBackgroundEven))
-                {
-                    e.Graphics.FillRectangle(b, r);
-                }
-            }
+            //else if (e.Day.Date.Month % 2 == 0)
+            //{
+            //    using (Brush b = new SolidBrush(ColorTable.DayBackgroundEven))
+            //    {
+            //        e.Graphics.FillRectangle(b, r);
+            //    }
+            //}
             else
             {
                 using (Brush b = new SolidBrush(ColorTable.DayBackgroundOdd))

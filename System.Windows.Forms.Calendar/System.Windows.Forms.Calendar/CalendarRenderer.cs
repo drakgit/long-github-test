@@ -649,37 +649,37 @@ namespace System.Windows.Forms.Calendar
             }
             else
             {
-                #region Short days (Calendar View)
-                leftStart = WeekHeaderWidth;
-                curLeft = leftStart;
-                curTop = DayNameHeadersHeight;
-                dayWidth = (Calendar.ClientSize.Width - leftStart - scrollBarWidth) / 7;
-                dayHeight = (Calendar.ClientSize.Height - curTop) / (Calendar.Days.Length / 7) - 1;
-                _dayNameHeaderColumns = new Rectangle[7];
-                int j = 0;
+                //#region Short days (Calendar View)
+                //leftStart = WeekHeaderWidth;
+                //curLeft = leftStart;
+                //curTop = DayNameHeadersHeight;
+                //dayWidth = (Calendar.ClientSize.Width - leftStart - scrollBarWidth) / 7;
+                //dayHeight = (Calendar.ClientSize.Height - curTop) / (Calendar.Days.Length / 7) - 1;
+                //_dayNameHeaderColumns = new Rectangle[7];
+                //int j = 0;
 
-                for (int i = 0; i < Calendar.Days.Length; i++)
-                {
-                    Calendar.Days[i].SetBounds(new Rectangle(curLeft, curTop, dayWidth, dayHeight));
-                    curLeft += dayWidth + 1;
+                //for (int i = 0; i < Calendar.Days.Length; i++)
+                //{
+                //    Calendar.Days[i].SetBounds(new Rectangle(curLeft, curTop, dayWidth, dayHeight));
+                //    curLeft += dayWidth + 1;
 
-                    if ((i + 1) % 7 == 0)
-                    {
-                        curTop += dayHeight + 1;
-                        curLeft = leftStart;
-                    }
+                //    if ((i + 1) % 7 == 0)
+                //    {
+                //        curTop += dayHeight + 1;
+                //        curLeft = leftStart;
+                //    }
 
-                    if (i < _dayNameHeaderColumns.Length)
-                    {
-                        _dayNameHeaderColumns[i] = new Rectangle(curLeft, 0, dayWidth, DayNameHeadersHeight);
-                    }
+                //    if (i < _dayNameHeaderColumns.Length)
+                //    {
+                //        _dayNameHeaderColumns[i] = new Rectangle(curLeft, 0, dayWidth, DayNameHeadersHeight);
+                //    }
 
-                    if (Calendar.Days[i].Date.DayOfWeek == Calendar.FirstDayOfWeek)
-                    {
-                        Calendar.Weeks[j++].SetBounds(new Rectangle(0, curTop, Calendar.ClientSize.Width, dayHeight));
-                    }
-                } 
-                #endregion
+                //    if (Calendar.Days[i].Date.DayOfWeek == Calendar.FirstDayOfWeek)
+                //    {
+                //        Calendar.Weeks[j++].SetBounds(new Rectangle(0, curTop, Calendar.ClientSize.Width, dayHeight));
+                //    }
+                //} 
+                //#endregion
             }
 
             if(performItemsLayout)
@@ -818,8 +818,8 @@ namespace System.Windows.Forms.Calendar
                 foreach (CalendarDay day in Calendar.Days)
                 {
                     #region Create groups
-                    
-                  //  maxItemsOnDayTop = Math.Max(maxItemsOnDayTop, day.DayTop.PassingItems.Count);
+
+                    //maxItemsOnDayTop = Math.Max(maxItemsOnDayTop, day.DayTop.PassingItems.Count);
 
                     List<List<CalendarItem>> groups = new List<List<CalendarItem>>();
                     List<CalendarItem> items = new List<CalendarItem>(day.ContainedItems);
@@ -845,7 +845,7 @@ namespace System.Windows.Forms.Calendar
                         int maxConcurrent = 0;
                         int startIndex, endIndex;
                         GetGroupBoundUnits(group, out startIndex, out endIndex);
-
+                       // endIndex = 0;
                         //Get the maximum concurrent items
                         for (int i = startIndex; i <= endIndex; i++) maxConcurrent = Math.Max(day.TimeUnits[i].PassingItems.Count, maxConcurrent);
 
@@ -968,97 +968,97 @@ namespace System.Windows.Forms.Calendar
             }
             else if (Calendar.DaysMode == CalendarDaysMode.Short)
             {
-                #region Short mode algorithm
+                //#region Short mode algorithm
 
-                Calendar.Items.Reverse();
+                //Calendar.Items.Reverse();
 
-                for (int i = 0; i < Calendar.Days.Length; i++)
-                {
-                    Calendar.Days[i].ContainedItems.Clear();
-                    Calendar.Days[i].SetOverflowEnd(false);
-                    Calendar.Days[i].SetOverflowStart(false);
-                }
+                //for (int i = 0; i < Calendar.Days.Length; i++)
+                //{
+                //    Calendar.Days[i].ContainedItems.Clear();
+                //    Calendar.Days[i].SetOverflowEnd(false);
+                //    Calendar.Days[i].SetOverflowStart(false);
+                //}
 
-                int maxItems = 0;
+                //int maxItems = 0;
 
-                foreach (CalendarItem item in Calendar.Items)
-                {
-                    CalendarDay dayStart = item.DayStart;
-                    CalendarDay dayEnd = item.DayEnd;
-                    item.ClearBounds();
+                //foreach (CalendarItem item in Calendar.Items)
+                //{
+                //    CalendarDay dayStart = item.DayStart;
+                //    CalendarDay dayEnd = item.DayEnd;
+                //    item.ClearBounds();
 
-                    for (int i = dayStart.Index; i <= dayEnd.Index; i++)
-                    {
-                        Calendar.Days[i].AddContainedItem(item);
-                        maxItems = Math.Max(maxItems, Calendar.Days[i].ContainedItems.Count);
-                    }
-                }
+                //    for (int i = dayStart.Index; i <= dayEnd.Index; i++)
+                //    {
+                //        Calendar.Days[i].AddContainedItem(item);
+                //        maxItems = Math.Max(maxItems, Calendar.Days[i].ContainedItems.Count);
+                //    }
+                //}
 
-                int[,] matix = new int[Calendar.Days.Length, maxItems];
-                int curIndex = 0;
-                foreach (CalendarItem item in Calendar.Items)
-                {
-                    CalendarDay dayStart = item.DayStart;
-                    CalendarDay dayEnd = item.DayEnd;
+                //int[,] matix = new int[Calendar.Days.Length, maxItems];
+                //int curIndex = 0;
+                //foreach (CalendarItem item in Calendar.Items)
+                //{
+                //    CalendarDay dayStart = item.DayStart;
+                //    CalendarDay dayEnd = item.DayEnd;
 
-                    PlaceInMatrix(ref matix, curIndex + 1, dayStart.Index, dayEnd.Index);
-                    curIndex++;
-                }
+                //    PlaceInMatrix(ref matix, curIndex + 1, dayStart.Index, dayEnd.Index);
+                //    curIndex++;
+                //}
 
 
-                for (int week = 0; week < Calendar.Weeks.Length; week++)
-                {
-                    int xStart = week * 7;
-                    int xEnd = xStart + 6;
-                    int index = 0;
-                    int[,] wmatix = new int[7, matix.GetLength(1)];
-                    CalendarDay sunday = Calendar.FindDay(Calendar.Weeks[week].StartDate);
+                //for (int week = 0; week < Calendar.Weeks.Length; week++)
+                //{
+                //    int xStart = week * 7;
+                //    int xEnd = xStart + 6;
+                //    int index = 0;
+                //    int[,] wmatix = new int[7, matix.GetLength(1)];
+                //    CalendarDay sunday = Calendar.FindDay(Calendar.Weeks[week].StartDate);
 
-                    #region Fill week matrix
+                //    #region Fill week matrix
 
-                    for (int i = 0; i < wmatix.GetLength(1); i++)
-                        for (int j = 0; j < wmatix.GetLength(0); j++)
-                            wmatix[j, i] = matix[j + xStart, i];
+                //    for (int i = 0; i < wmatix.GetLength(1); i++)
+                //        for (int j = 0; j < wmatix.GetLength(0); j++)
+                //            wmatix[j, i] = matix[j + xStart, i];
 
-                    #endregion
+                //    #endregion
 
-                    foreach (CalendarItem item in Calendar.Items)
-                    {
-                        int left, top, width = 0;
+                //    foreach (CalendarItem item in Calendar.Items)
+                //    {
+                //        int left, top, width = 0;
 
-                        FindInMatrix(wmatix, ++index, out left, out top);
+                //        FindInMatrix(wmatix, ++index, out left, out top);
 
-                        if (left < 0 || top < 0) continue;
+                //        if (left < 0 || top < 0) continue;
 
-                        for (int i = left; i < wmatix.GetLength(0); i++)
-                            if (wmatix[i, top] == index) 
-                                width++; 
-                            else 
-                                break;
+                //        for (int i = left; i < wmatix.GetLength(0); i++)
+                //            if (wmatix[i, top] == index) 
+                //                width++; 
+                //            else 
+                //                break;
                         
 
-                        CalendarDay dayStart = Calendar.Days[xStart + left];
-                        CalendarDay dayEnd = Calendar.Days[xStart + left + width - 1];
-                        Rectangle rStart = dayStart.Bounds;
-                        Rectangle rEnd = dayEnd.Bounds;
-                        int rtop = rStart.Top + DayHeaderHeight + top * StandardItemHeight;
-                        Rectangle r = Rectangle.FromLTRB(rStart.Left, rtop, rEnd.Right, rtop + StandardItemHeight);
+                //        CalendarDay dayStart = Calendar.Days[xStart + left];
+                //        CalendarDay dayEnd = Calendar.Days[xStart + left + width - 1];
+                //        Rectangle rStart = dayStart.Bounds;
+                //        Rectangle rEnd = dayEnd.Bounds;
+                //        int rtop = rStart.Top + DayHeaderHeight + top * StandardItemHeight;
+                //        Rectangle r = Rectangle.FromLTRB(rStart.Left, rtop, rEnd.Right, rtop + StandardItemHeight);
 
-                        if (r.Bottom <= sunday.Bounds.Bottom)
-                            item.AddBounds(r);
-                        else
-                            for (int i = dayStart.Index; i <= dayEnd.Index; i++)
-                                Calendar.Days[i].SetOverflowEnd(true);
+                //        if (r.Bottom <= sunday.Bounds.Bottom)
+                //            item.AddBounds(r);
+                //        else
+                //            for (int i = dayStart.Index; i <= dayEnd.Index; i++)
+                //                Calendar.Days[i].SetOverflowEnd(true);
                         
-                    }
-                }
+                //    }
+                //}
 
-                foreach (CalendarItem item in Calendar.Items)
-                    item.FirstAndLastRectangleGapping();
+                //foreach (CalendarItem item in Calendar.Items)
+                //    item.FirstAndLastRectangleGapping();
 
-                Calendar.Items.Reverse();
+                //Calendar.Items.Reverse();
 
-                #endregion
+                //#endregion
             }
 
             Calendar.RaiseItemsPositioned();
@@ -1387,7 +1387,7 @@ namespace System.Windows.Forms.Calendar
 
             CalendarRendererBoxEventArgs hevt = new CalendarRendererBoxEventArgs(e,
                     day.HeaderBounds,
-                    day.Date.Day.ToString(),
+                    "",
                     TextFormatFlags.VerticalCenter);
             hevt.Font = new Font(Calendar.Font, FontStyle.Bold);
 
@@ -1398,7 +1398,7 @@ namespace System.Windows.Forms.Calendar
 
             OnDrawDayHeaderBackground(e);
 
-            if (Calendar.DaysMode == CalendarDaysMode.Short && (day.Index == 0 || day.Date.Day == 1))
+            if (Calendar.DaysMode == CalendarDaysMode.Short && (day.Index == 0 ))//|| day.Date.Day == 1))
             {
                 hevt.Text = day.Date.ToString("dd MMM");
             }

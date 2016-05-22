@@ -98,6 +98,7 @@
     <Compile Include="CalendarWeek.cs" />
     <Compile Include="ICalendarSelectableElement.cs" />
     <Compile Include="ISelectableElement.cs" />
+    <Compile Include="LineInfo.cs" />
     <Compile Include="MonthViewBoxEventArgs.cs" />
     <Compile Include="MonthViewDay.cs" />
     <Compile Include="MonthViewMontEventArgs.cs" />

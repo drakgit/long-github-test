@@ -54,6 +54,7 @@ namespace System.Windows.Forms.Calendar
         private object _tag;
         private string _text;
         #endregion
+        private String _lineId;
 
         #region Ctor
 
@@ -61,7 +62,7 @@ namespace System.Windows.Forms.Calendar
         /// Creates a new Item that belongs to the specified calendar
         /// </summary>
         /// <param name="calendar">Calendar to reference item</param>
-        public CalendarItem(Calendar calendar)
+        public CalendarItem(Calendar calendar, String lineId)
             : base(calendar)
         {
             _unitsPassing = new List<CalendarTimeScaleUnit>();
@@ -71,6 +72,7 @@ namespace System.Windows.Forms.Calendar
             _oreColor = Color.Empty;
             _backgroundColorLighter = Color.Empty;
             _imageAlign = CalendarItemImageAlign.West;
+            LineId = lineId;
         }
 
         /// <summary>
@@ -80,12 +82,13 @@ namespace System.Windows.Forms.Calendar
         /// <param name="startDate">Start date of the item</param>
         /// <param name="endDate">End date of the item</param>
         /// <param name="text">Text of the item</param>
-        public CalendarItem(Calendar calendar, DateTime startDate, DateTime endDate, string text)
-            : this(calendar)
+        public CalendarItem(Calendar calendar, DateTime startDate, DateTime endDate, String lineId, string text)
+            : this(calendar, lineId)
         {
             StartDate = startDate;
             EndDate = endDate;
             Text = text;
+            LineId = lineId;
         }
 
         /// <summary>
@@ -95,14 +98,18 @@ namespace System.Windows.Forms.Calendar
         /// <param name="startDate">Start date of the item</param>
         /// <param name="duration">Duration of the item</param>
         /// <param name="text">Text of the item</param>
-        public CalendarItem(Calendar calendar, DateTime startDate, TimeSpan duration, string text)
-            : this(calendar, startDate, startDate.Add(duration), text)
+        public CalendarItem(Calendar calendar, DateTime startDate, TimeSpan duration, String lineId, string text)
+            : this(calendar, startDate, startDate.Add(duration), lineId, text)
         { }
 
         #endregion
 
         #region Properties
-         
+        public String LineId
+        {
+            get { return _lineId; }
+            set { _lineId = value; }
+        }
         /// <summary>
         /// Gets or sets an array of rectangles containing bounds additional to <see cref="Bounds"/> property.
         /// </summary>
@@ -177,7 +184,7 @@ namespace System.Windows.Forms.Calendar
                 }
                 else
                 {
-                    return Calendar.FindDay(EndDate);
+                    return Calendar.FindDay(_lineId);
                 }
             }
         }
@@ -204,7 +211,7 @@ namespace System.Windows.Forms.Calendar
                 }
                 else 
                 {
-                    return Calendar.FindDay(StartDate);
+                    return Calendar.FindDay(_lineId);
                 }
             }
         }
