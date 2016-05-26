@@ -9,7 +9,7 @@ namespace System.Windows.Forms.Calendar
     /// Interface implemented by every selectable element of the calendar
     /// </summary>
     public interface ICalendarSelectableElement
-        : ISelectableElement, IComparable<ICalendarSelectableElement>
+        : ISelectableElement
     {
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace System.Windows.Forms.Calendar
         /// <summary>
         /// Gets the calendar
         /// </summary>
-        DateTime Date { get; }
+        //DateTime Date { get; }
 
     }
 }

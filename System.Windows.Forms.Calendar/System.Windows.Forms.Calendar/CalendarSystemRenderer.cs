@@ -92,7 +92,7 @@ namespace System.Windows.Forms.Calendar
             base.OnDrawDayBorder(e);
 
             Rectangle r = e.Day.Bounds;
-            bool today = e.Day.Date.Date.Equals(DateTime.Today.Date);
+            bool today = false;// e.Day.Date.Date.Equals(DateTime.Today.Date);
 
             using (Pen p = new Pen(today ? ColorTable.TodayBorder : ColorTable.DayBorder, today ? 2 : 1))
             {
@@ -101,10 +101,10 @@ namespace System.Windows.Forms.Calendar
                     e.Graphics.DrawLine(p, r.Right, r.Top, r.Right, r.Bottom);
                     e.Graphics.DrawLine(p, r.Left, r.Bottom, r.Right, r.Bottom);
 
-                    if (e.Day.Date.DayOfWeek == DayOfWeek.Sunday || today)
-                    {
-                        e.Graphics.DrawLine(p, r.Left, r.Top, r.Left, r.Bottom);
-                    }
+                    //if (e.Day.Date.DayOfWeek == DayOfWeek.Sunday || today)
+                    //{
+                    //    e.Graphics.DrawLine(p, r.Left, r.Top, r.Left, r.Bottom);
+                    //}
                 }
                 else
                 {
@@ -132,7 +132,7 @@ namespace System.Windows.Forms.Calendar
 
         public override void OnDrawDayHeaderBackground(CalendarRendererDayEventArgs e)
         {
-            bool today = e.Day.Date.Date.Equals(DateTime.Today.Date);
+            bool today = false;// e.Day.Date.Date.Equals(DateTime.Today.Date);
 
             using (Brush b = new SolidBrush(today ? ColorTable.TodayTopBackground : ColorTable.DayHeaderBackground))
             {

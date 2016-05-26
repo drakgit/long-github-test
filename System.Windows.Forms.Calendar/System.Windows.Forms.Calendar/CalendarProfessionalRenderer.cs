@@ -114,14 +114,16 @@ namespace System.Windows.Forms.Calendar
         {
             Rectangle r = e.Day.HeaderBounds;
 
-            if (e.Day.Date == DateTime.Today)
-            {
-                GlossyRect(e.Graphics, e.Day.HeaderBounds, TodayA, TodayB, TodayC, TodayD);
-            }
-            else
-            {
-                GlossyRect(e.Graphics, e.Day.HeaderBounds, HeaderA, HeaderB, HeaderC, HeaderD);
-            }
+            //if (e.Day.Date == DateTime.Today)
+            //{
+            //    GlossyRect(e.Graphics, e.Day.HeaderBounds, TodayA, TodayB, TodayC, TodayD);
+            //}
+            //else
+            //{
+            //    GlossyRect(e.Graphics, e.Day.HeaderBounds, HeaderA, HeaderB, HeaderC, HeaderD);
+            //}
+
+            GlossyRect(e.Graphics, e.Day.HeaderBounds, HeaderA, HeaderB, HeaderC, HeaderD);
 
             if (e.Calendar.DaysMode == CalendarDaysMode.Short)
             {

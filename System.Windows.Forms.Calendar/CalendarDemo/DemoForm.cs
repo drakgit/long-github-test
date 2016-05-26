@@ -38,6 +38,15 @@ namespace CalendarDemo
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            List<LineInfo> lines = new List<LineInfo>();
+            lines.Add(new LineInfo("Line1", "Line 1"));
+            lines.Add(new LineInfo("Line2", "Line 2"));
+            lines.Add(new LineInfo("Line3", "Line 3"));
+            lines.Add(new LineInfo("Line4", "Line 4"));
+            lines.Add(new LineInfo("Line5", "Line 5"));
+
+            calendar1.Lines = lines;
+
             if (ItemsFile.Exists)
             {
                 List<ItemInfo> lst = new List<ItemInfo>();
@@ -49,9 +58,14 @@ namespace CalendarDemo
                     lst = xml.Deserialize(s) as List<ItemInfo>;
                 }
 
+                lst.Clear();
+
                 foreach (ItemInfo item in lst)
                 {
-                    CalendarItem cal = new CalendarItem(calendar1, item.StartTime, item.EndTime, item.Text);
+                    if (item.LineId == null) {
+                        item.LineId = "Line1";
+                    }
+                    CalendarItem cal = new CalendarItem(calendar1, item.StartTime, item.EndTime, item.LineId, item.Text);
 
                     if (!(item.R == 0 && item.G == 0 && item.B == 0))
                     {
@@ -178,7 +192,7 @@ namespace CalendarDemo
             
             foreach (CalendarItem item in _items)
             {
-                lst.Add(new ItemInfo(item.StartDate, item.EndDate, item.Text, item.BackgroundColor));
+                lst.Add(new ItemInfo(item.StartDate, item.EndDate, item.LineId, item.Text, item.BackgroundColor));
             }
 
             XmlSerializer xmls = new XmlSerializer(lst.GetType());
@@ -222,7 +236,7 @@ namespace CalendarDemo
 
         private void calendar1_DayHeaderClick(object sender, CalendarDayEventArgs e)
         {
-            calendar1.SetViewRange(e.CalendarDay.Date, e.CalendarDay.Date);
+           // calendar1.SetViewRange(e.CalendarDay.Date, e.CalendarDay.Date);
         }
 
         private void diagonalToolStripMenuItem_Click(object sender, EventArgs e)
@@ -277,7 +291,7 @@ namespace CalendarDemo
 
         private void monthView1_SelectionChanged(object sender, EventArgs e)
         {
-            calendar1.SetViewRange(monthView1.SelectionStart, monthView1.SelectionEnd);
+            //calendar1.SetViewRange(monthView1.SelectionStart, monthView1.SelectionEnd);
         }
 
         private void northToolStripMenuItem_Click(object sender, EventArgs e)

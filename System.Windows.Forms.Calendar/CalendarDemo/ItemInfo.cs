@@ -10,6 +10,7 @@ namespace CalendarDemo
     {
         public DateTime StartTime;
         public DateTime EndTime;
+        public String LineId;
         public string Text;
         public int A;
         public int R;
@@ -21,10 +22,11 @@ namespace CalendarDemo
         public ItemInfo()
         { }
 
-        public ItemInfo(DateTime startTime, DateTime endTime, string text, Color color)
+        public ItemInfo(DateTime startTime, DateTime endTime, String lineId, string text, Color color)
         {
             StartTime = startTime;
             EndTime = endTime;
+            LineId = lineId;
             Text = text;
             A = color.A;
             R = color.R;

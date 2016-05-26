@@ -35,14 +35,14 @@ namespace System.Windows.Forms.Calendar
         /// <param name="index">Index of the unit relative to the container day</param>
         /// <param name="hours">Hour of the unit</param>
         /// <param name="minutes">Minutes of the unit</param>
-        internal CalendarTimeScaleUnit(CalendarDay day, int index, int hours, int minutes)
+        internal CalendarTimeScaleUnit(CalendarDay day, int index, DateTime dt, int hours, int minutes)
             : base(day.Calendar)
         {
             _day = day;
             _index = index;
             _hours = hours;
             _minutes = minutes;
-
+            _date = dt.Date;
             _passingItems = new List<CalendarItem>();
         }
 
@@ -55,16 +55,20 @@ namespace System.Windows.Forms.Calendar
         /// <summary>
         /// Gets the exact date when the unit starts
         /// </summary>
-        public override DateTime Date
+        public DateTime Date
         {
             get
             {
-                if (_date.Equals(DateTime.MinValue))
-                {
-                   // _date = new DateTime(Day.Date.Year, Day.Date.Month, Day.Date.Day, Hours, Minutes, 0);
-                }
+                //if (_date.Equals(DateTime.MinValue))
+                //{
+                //   // _date = new DateTime(Day.Date.Year, Day.Date.Month, Day.Date.Day, Hours, Minutes, 0);
+                //}
 
-                return _date;
+                return new DateTime(_date.Date.Year, _date.Date.Month, _date.Date.Day, Hours, Minutes, 0); ;
+            }
+            set
+            {
+                _date = value;
             }
         }
 

@@ -50,7 +50,7 @@ namespace System.Windows.Forms.Calendar
         private HatchStyle _pattern;
         private Color _patternColor;
         private List<CalendarTimeScaleUnit> _unitsPassing;
-        private List<CalendarDayTop> _topsPassing;
+      //  private List<CalendarDayTop> _topsPassing;
         private object _tag;
         private string _text;
         #endregion
@@ -66,13 +66,13 @@ namespace System.Windows.Forms.Calendar
             : base(calendar)
         {
             _unitsPassing = new List<CalendarTimeScaleUnit>();
-            _topsPassing = new List<CalendarDayTop>();
+         //   _topsPassing = new List<CalendarDayTop>();
             _backgroundColor = Color.Empty;
             _borderColor = Color.Empty;
             _oreColor = Color.Empty;
             _backgroundColorLighter = Color.Empty;
             _imageAlign = CalendarItemImageAlign.West;
-            LineId = lineId;
+            _lineId = lineId;
         }
 
         /// <summary>
@@ -88,7 +88,6 @@ namespace System.Windows.Forms.Calendar
             StartDate = startDate;
             EndDate = endDate;
             Text = text;
-            LineId = lineId;
         }
 
         /// <summary>
@@ -154,7 +153,7 @@ namespace System.Windows.Forms.Calendar
         /// <summary>
         /// Gets the StartDate of the item. Implemented
         /// </summary>
-        public override DateTime Date
+        public DateTime Date
         {
             get
             {
@@ -344,11 +343,11 @@ namespace System.Windows.Forms.Calendar
             get
             {
                 //Checks for an intersection of item's dates against calendar dates
-                DateTime fd = Calendar.Days[0].Date;
-                DateTime ld = Calendar.Days[Calendar.Days.Length - 1].Date.Add(new TimeSpan(23,59,59));
-                DateTime sd = StartDate;
-                DateTime ed = EndDate;
-                return sd < ld && fd < ed;
+                //DateTime fd = Calendar.Days[0].Date;
+                //DateTime ld = Calendar.Days[Calendar.Days.Length - 1].Date.Add(new TimeSpan(23,59,59));
+                //DateTime sd = StartDate;
+                //DateTime ed = EndDate;
+                return true;// sd < ld && fd < ed;
             }
         }
 
@@ -359,7 +358,7 @@ namespace System.Windows.Forms.Calendar
         {
             get
             {
-                return StartDate.CompareTo(Calendar.Days[0].Date) < 0;
+                return false;// StartDate.CompareTo(Calendar.Days[0].Date) < 0;
             }
         }
 
@@ -370,7 +369,7 @@ namespace System.Windows.Forms.Calendar
         {
             get
             {
-                return EndDate.CompareTo(Calendar.Days[Calendar.Days.Length - 1].Date.Add(new TimeSpan(23, 59, 59))) > 0;
+                return false;// EndDate.CompareTo(Calendar.Days[Calendar.Days.Length - 1].Date.Add(new TimeSpan(23, 59, 59))) > 0;
             }
         }
 
@@ -452,10 +451,10 @@ namespace System.Windows.Forms.Calendar
         /// <summary>
         /// Gets the list of DayTops that this item passes thru
         /// </summary>
-        internal List<CalendarDayTop> TopsPassing
-        {
-            get { return _topsPassing; }
-        }
+        //internal List<CalendarDayTop> TopsPassing
+        //{
+        //    get { return _topsPassing; }
+        //}
 
         /// <summary>
         /// Gets a value indicating if the item should show the time of the <see cref="StartDate"/>
@@ -708,13 +707,13 @@ namespace System.Windows.Forms.Calendar
         /// Adds the specified <see cref="CalendarDayTop"/> as a passing one
         /// </summary>
         /// <param name="top"></param>
-        internal void AddTopPassing(CalendarDayTop top)
-        {
-            if (!TopsPassing.Contains(top))
-            {
-                TopsPassing.Add(top);
-            }
-        }
+        //internal void AddTopPassing(CalendarDayTop top)
+        //{
+        //    if (!TopsPassing.Contains(top))
+        //    {
+        //        TopsPassing.Add(top);
+        //    }
+        //}
 
         /// <summary>
         /// Clears the item's existance off passing units and tops
@@ -727,7 +726,7 @@ namespace System.Windows.Forms.Calendar
             }
 
             UnitsPassing.Clear();
-            TopsPassing.Clear();
+            //TopsPassing.Clear();
         }
 
         /// <summary>

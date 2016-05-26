@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Diagnostics;
 
 namespace System.Windows.Forms.Calendar
 {
@@ -63,10 +64,10 @@ namespace System.Windows.Forms.Calendar
         /// <param name="top1"></param>
         /// <param name="top2"></param>
         /// <returns></returns>
-        private static int CompareTops(CalendarDayTop top1, CalendarDayTop top2)
-        {
-            return top1.Date.CompareTo(top2.Date);
-        }
+        //private static int CompareTops(CalendarDayTop top1, CalendarDayTop top2)
+        //{
+        //    return top1.Date.CompareTo(top2.Date);
+        //}
 
         /// <summary>
         /// Creates a rectangle with rounded corners
@@ -641,6 +642,7 @@ namespace System.Windows.Forms.Calendar
                             unit.SetVisible(true);
                             //unit.SetBounds(new Rectangle(day.Bounds.Left, day.BodyBounds.Top + k++ * TimeScaleUnitHeight, day.Bounds.Width, TimeScaleUnitHeight));
                         }
+                   //     Debug.WriteLine(unit.Date.ToString() + "day.LineId=" + day.LineId + " ,day.Bounds.Left=" + day.Bounds.Left);
                         unit.SetBounds(new Rectangle(day.Bounds.Left, utop, day.Bounds.Width, TimeScaleUnitHeight));
                         utop += TimeScaleUnitHeight;
                     }
@@ -740,6 +742,7 @@ namespace System.Windows.Forms.Calendar
                         double unitDurationMinutes = Convert.ToDouble((int)Calendar.TimeScale);
                         DateTime date1 = item.StartDate;
                         DateTime date2 = item.EndDate;
+                     //   Debug.WriteLine("day=" + day.LineId);
 
                         int indexStart = Convert.ToInt32(Math.Floor(date1.TimeOfDay.TotalMinutes / unitDurationMinutes));
                         int indexEnd = Convert.ToInt32(Math.Ceiling(date2.TimeOfDay.TotalMinutes / unitDurationMinutes));
@@ -958,7 +961,9 @@ namespace System.Windows.Forms.Calendar
                             item.SetBounds(Rectangle.FromLTRB(rleft, rtop, right, bottom));
                             item.SetMinuteStartTop(GetTimeY(item.StartDate.TimeOfDay));
                             item.SetMinuteEndTop(GetTimeY(item.EndDate.TimeOfDay));
-                            
+
+                           Debug.WriteLine("item.LineId=" + item.LineId + ",item.Date.ToString()=" + item.Date.ToString() + ",Bounds=" + String.Format("{0} {1} {2} {3}", rleft, rtop, right, bottom));
+   
                         }
 
                         #endregion
@@ -1393,14 +1398,14 @@ namespace System.Windows.Forms.Calendar
 
             CalendarRendererBoxEventArgs devt = new CalendarRendererBoxEventArgs(e,
                     day.HeaderBounds,
-                    day.Date.ToString("dddd"),
+                    day.LineName,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
 
             OnDrawDayHeaderBackground(e);
 
             if (Calendar.DaysMode == CalendarDaysMode.Short && (day.Index == 0 ))//|| day.Date.Day == 1))
             {
-                hevt.Text = day.Date.ToString("dd MMM");
+                hevt.Text = day.LineName;
             }
 
             OnDrawDayHeaderText(hevt);

@@ -14,7 +14,7 @@ namespace System.Windows.Forms.Calendar
         #region Fields
         private Calendar _calendar;
         private Rectangle _bounds;
-        private DateTime _date;
+        //private DateTime _date;
         private bool _selected;
         #endregion
 
@@ -36,10 +36,10 @@ namespace System.Windows.Forms.Calendar
         #region ICalendarSelectableElement Members
 
         
-        public virtual DateTime Date
-        {
-            get { return _date; }
-        }
+        //public virtual DateTime Date
+        //{
+        //    get { return _date; }
+        //}
 
 
         /// <summary>
@@ -74,10 +74,10 @@ namespace System.Windows.Forms.Calendar
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        public virtual int CompareTo(ICalendarSelectableElement element)
-        {
-            return this.Date.CompareTo(element.Date);
-        }
+        //public virtual int CompareTo(ICalendarSelectableElement element)
+        //{
+        //    return this.Date.CompareTo(element.Date);
+        //}
 
         #endregion
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace System.Windows.Forms.Calendar
 {
@@ -25,7 +26,6 @@ namespace System.Windows.Forms.Calendar
         #region Fields
         private List<CalendarItem> _containedItems;
         private Calendar _calendar;
-        private DateTime _date;
      //   private CalendarDayTop _dayTop;
         private int _index;
         private bool _overflowStart;
@@ -35,6 +35,8 @@ namespace System.Windows.Forms.Calendar
         private CalendarTimeScaleUnit[] _timeUnits;
         private String _lineId;
         private String _lineName;
+        private DateTime _fromDate;
+        private DateTime _toDate;
         #endregion
 
 
@@ -56,6 +58,8 @@ namespace System.Windows.Forms.Calendar
        //     _date = date;
             _index = index;
             _lineId = lineId;
+            _fromDate = calendar.FromDate;
+            _toDate = calendar.ToDate;
 
             UpdateUnits();
         }
@@ -63,6 +67,18 @@ namespace System.Windows.Forms.Calendar
         #endregion
 
         #region Properties
+
+        public DateTime FromDate
+        {
+            get { return _fromDate; }
+            set { _fromDate = value; }
+        }
+
+        public DateTime ToDate
+        {
+            get { return _toDate; }
+            set { _toDate = value; }
+        }
 
         public String LineId
         {
@@ -224,10 +240,10 @@ namespace System.Windows.Forms.Calendar
 
         #region Public Methods
 
-        public override string ToString()
-        {
-            return Date.ToShortDateString();
-        }
+        //public override string ToString()
+        //{
+        //    return Date.ToShortDateString();
+        //}
 
         #endregion
 
@@ -298,15 +314,18 @@ namespace System.Windows.Forms.Calendar
                 case CalendarTimeScale.FiveMinutes:     factor = 12;    break;
                 default: throw new NotImplementedException("TimeScale not supported");
             }
+            int totalHours = (int)((_toDate - _fromDate).TotalHours + 0.5);
 
-            _timeUnits = new CalendarTimeScaleUnit[24 * factor];
+            _timeUnits = new CalendarTimeScaleUnit[totalHours * factor];
             
             int hourSum = 0;
             int minSum = 0;
+            int daySum = 0;
 
+            DateTime startDate = _fromDate.Date;
             for (int i = 0; i < _timeUnits.Length; i++)
             {
-                _timeUnits[i] = new CalendarTimeScaleUnit(this, i, hourSum, minSum);
+                _timeUnits[i] = new CalendarTimeScaleUnit(this, i, startDate.Date, hourSum, minSum);
 
                 minSum += 60 / factor;
 
@@ -315,6 +334,15 @@ namespace System.Windows.Forms.Calendar
                     minSum = 0;
                     hourSum++;
                 }
+
+                if (hourSum >= 24)
+                {
+                    hourSum = 0;
+                    daySum++;
+                    startDate = startDate.Date.AddDays(1);
+                    Debug.WriteLine("startTime=" + startDate);
+                }
+
             }
 
             UpdateHighlights();

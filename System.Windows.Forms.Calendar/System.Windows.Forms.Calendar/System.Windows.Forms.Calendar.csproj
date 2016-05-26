@@ -61,8 +61,6 @@
   <ItemGroup>
     <Compile Include="CalendarColorTable.cs" />
     <Compile Include="CalendarDayEventArgs.cs" />
-    <Compile Include="CalendarDayTop.cs">
-    </Compile>
     <Compile Include="CalendarHighlightRange.cs" />
     <Compile Include="CalendarItemCancelEventArgs.cs" />
     <Compile Include="CalendarItemEventArgs.cs" />
