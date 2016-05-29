@@ -62,6 +62,7 @@
     <Compile Include="CalendarColorTable.cs" />
     <Compile Include="CalendarDayEventArgs.cs" />
     <Compile Include="CalendarHighlightRange.cs" />
+    <Compile Include="CalendarItemArrangement.cs" />
     <Compile Include="CalendarItemCancelEventArgs.cs" />
     <Compile Include="CalendarItemEventArgs.cs" />
     <Compile Include="CalendarItemImageAlign.cs" />

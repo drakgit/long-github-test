@@ -42,9 +42,10 @@ namespace System.Windows.Forms.Calendar
         /// <param name="item1"></param>
         /// <param name="item2"></param>
         /// <returns></returns>
-        private static int CompareItems(CalendarItem item1, CalendarItem item2)
+        public static int CompareItems(CalendarItem item1, CalendarItem item2)
         {
-            return item1.StartDate.CompareTo(item2.StartDate) * -1;
+            //return item1.StartDate.CompareTo(item2.StartDate) * -1;
+            return item1.Comparer(item2);
         }
 
         /// <summary>
@@ -176,7 +177,7 @@ namespace System.Windows.Forms.Calendar
 
             _calendar = calendar;
             _allDayItemsPadding = 5;
-            _itemsPadding = 5;
+            _itemsPadding = 2;
             _itemTextMargin = new Padding(3);
             _itemShadowPadding = 4;
             _itemInvalidateMargin = 0;
@@ -427,7 +428,7 @@ namespace System.Windows.Forms.Calendar
         /// <param name="time">Time of day to get Y coordinate</param>
         /// <returns>Y coordinate corresponding to the specified <para>time</para></returns>
         /// <exception cref="InvalidOperationException">When calendar is not in <c>Expaned</c> mode.</exception>
-        public int GetTimeY(TimeSpan time)
+        public int GetTimeY(DateTime time)
         {
             if (Calendar.DaysMode != CalendarDaysMode.Expanded) 
                 throw new InvalidOperationException("Can't measure Time's Y when calendar isn't in Expanded mode");
@@ -439,11 +440,11 @@ namespace System.Windows.Forms.Calendar
             CalendarDay fisrtDay = Calendar.Days[0];
             CalendarTimeScaleUnit firstUnit = fisrtDay.TimeUnits[0];
             double duration = Convert.ToDouble(firstUnit.Duration.TotalMinutes);
-            double totalmins = time.TotalMinutes;
+            double totalmins = time.TimeOfDay.TotalMinutes;
             int unitIndex = Convert.ToInt32(Math.Floor(totalmins / duration));
             double module = Convert.ToInt32(Math.Floor(totalmins % duration));
             
-            CalendarTimeScaleUnit unit = Calendar.Days[0].TimeUnits[unitIndex];
+            CalendarTimeScaleUnit unit = Calendar.Days[0].FindUnit(time);// .TimeUnits[unitIndex];
 
             int minuteHeight = Convert.ToInt32(Convert.ToDouble(unit.Bounds.Height) / duration);
 
@@ -629,6 +630,7 @@ namespace System.Windows.Forms.Calendar
                     //int k = 0;
                     int utop = day.BodyBounds.Top + Calendar.TimeUnitsOffset * TimeScaleUnitHeight;
 
+                 //   Debug.WriteLine("//--------------------START " + day.LineId + " " + DateTime.Now.ToString() + "------------------//");
                     for (int j = 0; j < day.TimeUnits.Length; j++)
                     {
                         CalendarTimeScaleUnit unit = day.TimeUnits[j];
@@ -642,10 +644,11 @@ namespace System.Windows.Forms.Calendar
                             unit.SetVisible(true);
                             //unit.SetBounds(new Rectangle(day.Bounds.Left, day.BodyBounds.Top + k++ * TimeScaleUnitHeight, day.Bounds.Width, TimeScaleUnitHeight));
                         }
-                   //     Debug.WriteLine(unit.Date.ToString() + "day.LineId=" + day.LineId + " ,day.Bounds.Left=" + day.Bounds.Left);
+                    //    Debug.WriteLine("[" + j + "], " + unit.Date.ToString() + "day.LineId=" + day.LineId + " ,day.Bounds.Left=" + day.Bounds.Left + ",utop=" + utop);
                         unit.SetBounds(new Rectangle(day.Bounds.Left, utop, day.Bounds.Width, TimeScaleUnitHeight));
                         utop += TimeScaleUnitHeight;
                     }
+                  //  Debug.WriteLine("//--------------------END " + day.LineId + " " + DateTime.Now.ToString() + "------------------//");
                 } 
                 #endregion
             }
@@ -701,6 +704,8 @@ namespace System.Windows.Forms.Calendar
             foreach (CalendarDay day in Calendar.Days)
                 day.ContainedItems.Clear();
 
+
+
             if (Calendar.DaysMode == CalendarDaysMode.Expanded)
             {
                 #region Expanded mode algorithm
@@ -708,6 +713,29 @@ namespace System.Windows.Forms.Calendar
                 #region Assign units and initial coords
 
                 int maxItemsOnDayTop = 0;
+
+
+                //for (int i = 0; i <= Calendar.Items.Count; i++)
+                //{
+                //    for (int j = Calendar.Items.Count - 1; j <= i + 1; j--)
+                //    {
+                //        if (Calendar.Items[j].Comparer(Calendar.Items[j - 1]) < 0)
+                //        {
+                //            CalendarItem temp = Calendar.Items[j];
+                //            Calendar.Items[j] = Calendar.Items[j - 1];
+                //            Calendar.Items[j - 1] = temp;
+                //        }
+                //    }
+                //}
+
+                Calendar.Items.Sort(CompareItems);
+
+                Console.WriteLine("//START--------------------------------//");
+                foreach (CalendarItem item in Calendar.Items)
+                {
+                    Console.WriteLine("lineId=" + item.LineId + ", StartDate=" + item.StartDate + ",EndDate=" + item.EndDate);
+                }
+                Console.WriteLine("//END--------------------------------//");
 
                 foreach (CalendarItem item in Calendar.Items)
                 {
@@ -744,16 +772,18 @@ namespace System.Windows.Forms.Calendar
                         DateTime date2 = item.EndDate;
                      //   Debug.WriteLine("day=" + day.LineId);
 
-                        int indexStart = Convert.ToInt32(Math.Floor(date1.TimeOfDay.TotalMinutes / unitDurationMinutes));
-                        int indexEnd = Convert.ToInt32(Math.Ceiling(date2.TimeOfDay.TotalMinutes / unitDurationMinutes));
+                 //       int indexStart = Convert.ToInt32(Math.Floor(date1.TimeOfDay.TotalMinutes / unitDurationMinutes));
+                 //       int indexEnd = Convert.ToInt32(Math.Ceiling(date2.TimeOfDay.TotalMinutes / unitDurationMinutes));
 
                         for (int i = 0; i < day.TimeUnits.Length; i++)
                         {
-                            if (i >= indexStart && i < indexEnd)
+                            //if (i >= indexStart && i < indexEnd)
+                            if (date1.CompareTo(day.TimeUnits[i].Date) <= 0 && date2.CompareTo(day.TimeUnits[i].Date) > 0)
                             {
                                 day.TimeUnits[i].AddPassingItem(item);
                                 item.AddUnitPassing(day.TimeUnits[i]);
                             }
+                        //    Debug.WriteLine("day.TimeUnits[i]=" + i.ToString() + " count=" + day.TimeUnits[i].PassingItems.Count);
                         }
                         
                         item.SetBounds(Rectangle.Empty);
@@ -820,154 +850,172 @@ namespace System.Windows.Forms.Calendar
 
                 foreach (CalendarDay day in Calendar.Days)
                 {
-                    #region Create groups
+                    int itemWidth = Convert.ToInt32(Math.Floor(Convert.ToSingle(day.Bounds.Width - ItemsPadding)));
 
-                    //maxItemsOnDayTop = Math.Max(maxItemsOnDayTop, day.DayTop.PassingItems.Count);
-
-                    List<List<CalendarItem>> groups = new List<List<CalendarItem>>();
                     List<CalendarItem> items = new List<CalendarItem>(day.ContainedItems);
-
-                    while (items.Count > 0)
+                    foreach (CalendarItem item in items)
                     {
-                        List<CalendarItem> group = new List<CalendarItem>();
-
-                        CollectIntersectingGroup(items[0], items, group);
-
-                        groups.Add(group);
-
-                        foreach (CalendarItem item in group)
-                            items.Remove(item);
+                        int rtop = day.TimeUnits[item.UnitsPassing[0].Index].Bounds.Top;
+                        int bottom = day.TimeUnits[item.UnitsPassing[item.UnitsPassing.Count - 1].Index].Bounds.Bottom;
+                        int rleft = day.Bounds.Left + ItemsPadding;
+                        int right = day.Bounds.Left + itemWidth;
+                        item.SetBounds(Rectangle.FromLTRB(rleft, rtop, right, bottom));
+                        item.SetMinuteStartTop(GetTimeY(item.StartDate));
+                        item.SetMinuteEndTop(GetTimeY(item.EndDate));
                     }
 
-                    #endregion
+                    //#region Create groups
 
-                    foreach (List<CalendarItem> group in groups)
-                    {
-                        #region Create group matrix
+                    ////maxItemsOnDayTop = Math.Max(maxItemsOnDayTop, day.DayTop.PassingItems.Count);
 
-                        int maxConcurrent = 0;
-                        int startIndex, endIndex;
-                        GetGroupBoundUnits(group, out startIndex, out endIndex);
-                       // endIndex = 0;
-                        //Get the maximum concurrent items
-                        for (int i = startIndex; i <= endIndex; i++) maxConcurrent = Math.Max(day.TimeUnits[i].PassingItems.Count, maxConcurrent);
+                    //List<List<CalendarItem>> groups = new List<List<CalendarItem>>();
+                    //List<CalendarItem> items = new List<CalendarItem>(day.ContainedItems);
+                    //Debug.WriteLine("items=" + items.Count);
 
-                        int[,] matix = new int[maxConcurrent, endIndex - startIndex + 1];
+                    //while (items.Count > 0)
+                    //{
+                    //    List<CalendarItem> group = new List<CalendarItem>();
 
-                        foreach (CalendarItem item in group)
-                        {
-                            int x = 0;
-                            item.UnitsPassing.Sort(CompareUnits);
-                            int unitStart = item.UnitsPassing[0].Index - startIndex;
-                            int unitEnd = unitStart + item.UnitsPassing.Count - 1;
-                            bool xFound = false;
+                    //    CollectIntersectingGroup(items[0], items, group);
 
-                            //if (startIndex + unitEnd < offset)
-                            //{
-                            //    item.SetIsOnView(false);
-                            //    continue;
-                            //}
-                            //else
-                            //{
-                            //    item.SetIsOnView(true);
-                            //}
+                    //    groups.Add(group);
 
-                            while (!xFound)
-                            {
-                                xFound = true;
+                    //    foreach (CalendarItem item in group)
+                    //        items.Remove(item);
+                    //}
 
-                                for (int i = unitStart; i <= unitEnd; i++)
-                                {
-                                    if (matix[x, i] != 0)
-                                    {
-                                        xFound = false;
-                                        break;
-                                    }
-                                }
-                                if (!xFound) x++;
-                            }
+                    //#endregion
 
-                            for (int i = unitStart; i <= unitEnd; i++)
-                            {
-                                matix[x, i] = group.IndexOf(item) + 1;
-                            }
-                        }
-                        #endregion
+                    //Debug.WriteLine("groups.Count=" + groups.Count);
 
-                        #region Expand Items
-                        foreach (CalendarItem item in group)
-                        {
-                            int index = group.IndexOf(item);
-                            int left, top;
-                            int height = item.UnitsPassing.Count;
-                            int width = 1;
-                            FindInMatrix(matix, index + 1, out left, out top);
+                    //foreach (List<CalendarItem> group in groups)
+                    //{
+                    //    Debug.WriteLine("group.Count=" + group.Count);
+                    //    #region Create group matrix
+
+                    //    int maxConcurrent = 0;
+                    //    int startIndex, endIndex;
+                    //    GetGroupBoundUnits(group, out startIndex, out endIndex);
+                    //   // endIndex = 0;
+                    //    //Get the maximum concurrent items
+                    //    for (int i = startIndex; i <= endIndex; i++) maxConcurrent = Math.Max(day.TimeUnits[i].PassingItems.Count, maxConcurrent);
+
+                    //    int[,] matix = new int[maxConcurrent, endIndex - startIndex + 1];
+
+                    //    foreach (CalendarItem item in group)
+                    //    {
+                    //        int x = 0;
+                    //        item.UnitsPassing.Sort(CompareUnits);
+                    //        int unitStart = item.UnitsPassing[0].Index - startIndex;
+                    //        int unitEnd = unitStart + item.UnitsPassing.Count - 1;
+                    //        bool xFound = false;
+
+                    //        //if (startIndex + unitEnd < offset)
+                    //        //{
+                    //        //    item.SetIsOnView(false);
+                    //        //    continue;
+                    //        //}
+                    //        //else
+                    //        //{
+                    //        //    item.SetIsOnView(true);
+                    //        //}
+
+                    //        while (!xFound)
+                    //        {
+                    //            xFound = true;
+
+                    //            for (int i = unitStart; i <= unitEnd; i++)
+                    //            {
+                    //                if (matix[x, i] != 0)
+                    //                {
+                    //                    xFound = false;
+                    //                    break;
+                    //                }
+                    //            }
+                    //            if (!xFound) x++;
+                    //        }
+
+                    //        for (int i = unitStart; i <= unitEnd; i++)
+                    //        {
+                    //            matix[x, i] = group.IndexOf(item) + 1;
+                    //        }
+                    //    }
+                    //    #endregion
+
+                    //    #region Expand Items
+                    //    foreach (CalendarItem item in group)
+                    //    {
+                    //        int index = group.IndexOf(item);
+                    //        int left, top;
+                    //        int height = item.UnitsPassing.Count;
+                    //        int width = 1;
+                    //        FindInMatrix(matix, index + 1, out left, out top);
 
 
-                            bool canExpand = left >= 0 && top >= 0;
-                            while (canExpand)
-                            {
-                                for (int i = top; i < top + height; i++)
-                                {
-                                    if (matix.GetLength(0) <= left + width || matix[left + width, i] != 0)
-                                    {
-                                        canExpand = false;
-                                        break;
-                                    }
-                                }
+                    //        bool canExpand = left >= 0 && top >= 0;
+                    //        while (canExpand)
+                    //        {
+                    //            for (int i = top; i < top + height; i++)
+                    //            {
+                    //                if (matix.GetLength(0) <= left + width || matix[left + width, i] != 0)
+                    //                {
+                    //                    canExpand = false;
+                    //                    break;
+                    //                }
+                    //            }
 
-                                if (canExpand)
-                                {
-                                    for (int i = top; i < top + height; i++)
-                                    {
-                                        matix[left + width, i] = index + 1;
-                                    }
-                                    width++;
-                                }
-                            }
-                        }
-                        #endregion
+                    //            if (canExpand)
+                    //            {
+                    //                for (int i = top; i < top + height; i++)
+                    //                {
+                    //                    matix[left + width, i] = index + 1;
+                    //                }
+                    //                width++;
+                    //            }
+                    //        }
+                    //    }
+                    //    #endregion
 
-                        #region Matrix to rectangles
+                    //    #region Matrix to rectangles
 
-                        int itemWidth = Convert.ToInt32(Math.Floor(Convert.ToSingle(day.Bounds.Width - ItemsPadding) / Convert.ToSingle(matix.GetLength(0))));
+                    //    int itemWidth = Convert.ToInt32(Math.Floor(Convert.ToSingle(day.Bounds.Width - ItemsPadding) / Convert.ToSingle(matix.GetLength(0))));
 
-                        foreach (CalendarItem item in group)
-                        {
-                            int index = group.IndexOf(item);
-                            int top, left;
-                            int width = 1;
-                            FindInMatrix(matix, index + 1, out left, out top);
+                    //    foreach (CalendarItem item in group)
+                    //    {
+                    //        int index = group.IndexOf(item);
+                    //        int top, left;
+                    //        int width = 1;
+                    //        FindInMatrix(matix, index + 1, out left, out top);
 
-                            if (left >= 0 && top >= 0)
-                            {
-                                for (int i = left + 1; i < matix.GetLength(0); i++)
-                                {
-                                    if (matix[i, top] == index + 1)
-                                    {
-                                        width++;
-                                    }
-                                    else
-                                    {
-                                        break;
-                                    }
-                                } 
-                            }
+                    //        if (left >= 0 && top >= 0)
+                    //        {
+                    //            for (int i = left + 1; i < matix.GetLength(0); i++)
+                    //            {
+                    //                if (matix[i, top] == index + 1)
+                    //                {
+                    //                    width++;
+                    //                }
+                    //                else
+                    //                {
+                    //                    break;
+                    //                }
+                    //            } 
+                    //        }
 
-                            int rtop = day.TimeUnits[item.UnitsPassing[0].Index].Bounds.Top;
-                            int bottom = day.TimeUnits[item.UnitsPassing[item.UnitsPassing.Count - 1].Index].Bounds.Bottom;
-                            int rleft = day.Bounds.Left + left * itemWidth;
-                            int right = rleft + itemWidth * width;
-                            item.SetBounds(Rectangle.FromLTRB(rleft, rtop, right, bottom));
-                            item.SetMinuteStartTop(GetTimeY(item.StartDate.TimeOfDay));
-                            item.SetMinuteEndTop(GetTimeY(item.EndDate.TimeOfDay));
+                    //        int rtop = day.TimeUnits[item.UnitsPassing[0].Index].Bounds.Top;
+                    //        int bottom = day.TimeUnits[item.UnitsPassing[item.UnitsPassing.Count - 1].Index].Bounds.Bottom;
+                    //        int rleft = day.Bounds.Left + left * itemWidth;
+                    //        int right = rleft + itemWidth * width;
+                    //        item.SetBounds(Rectangle.FromLTRB(rleft, rtop, right, bottom));
+                    //        item.SetMinuteStartTop(GetTimeY(item.StartDate));
+                    //        item.SetMinuteEndTop(GetTimeY(item.EndDate));
 
-                           Debug.WriteLine("item.LineId=" + item.LineId + ",item.Date.ToString()=" + item.Date.ToString() + ",Bounds=" + String.Format("{0} {1} {2} {3}", rleft, rtop, right, bottom));
+                    //        Debug.WriteLine("item.UnitsPassing[0]=" + item.UnitsPassing[0].Date.ToString() + "item.LineId=" + item.LineId + ",item.Date.ToString()=" + item.Date.ToString() + ",Bounds=" + String.Format("{0} {1} {2} {3}", rleft, rtop, right, bottom));
    
-                        }
+                    //    }
 
-                        #endregion
-                    }
+                    //    #endregion
+                    //}
                 }
                 #endregion
             }
@@ -1239,22 +1287,22 @@ namespace System.Windows.Forms.Calendar
         /// <param name="calendarItem"></param>
         /// <param name="items"></param>
         /// <param name="grouped"></param>
-        private void CollectIntersectingGroup(CalendarItem calendarItem, List<CalendarItem> items, List<CalendarItem> grouped)
-        {
-            if (!grouped.Contains(calendarItem))
-                grouped.Add(calendarItem);
+        //private void CollectIntersectingGroup(CalendarItem calendarItem, List<CalendarItem> items, List<CalendarItem> grouped)
+        //{
+        //    if (!grouped.Contains(calendarItem))
+        //        grouped.Add(calendarItem);
 
-            foreach (CalendarItem item in items)
-            {
-                if (!grouped.Contains(item) &&
-                    calendarItem.IntersectsWith(item.StartDate.TimeOfDay, item.EndDate.TimeOfDay))
-                {
-                    grouped.Add(item);
+        //    foreach (CalendarItem item in items)
+        //    {
+        //        if (!grouped.Contains(item) &&
+        //            calendarItem.IntersectsWith(item.StartDate, item.EndDate))
+        //        {
+        //            grouped.Add(item);
 
-                    CollectIntersectingGroup(item, items, grouped);
-                }
-            }
-        }
+        //            CollectIntersectingGroup(item, items, grouped);
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Prints the specified matrix on debug
@@ -1410,6 +1458,7 @@ namespace System.Windows.Forms.Calendar
 
             OnDrawDayHeaderText(hevt);
 
+            devt.Text = day.LineName;
             if (devt.TextSize.Width < day.HeaderBounds.Width - hevt.TextSize.Width * 2
                 && e.Calendar.DaysMode == CalendarDaysMode.Expanded)
             {

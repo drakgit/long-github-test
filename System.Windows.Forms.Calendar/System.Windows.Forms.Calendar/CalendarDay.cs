@@ -340,7 +340,7 @@ namespace System.Windows.Forms.Calendar
                     hourSum = 0;
                     daySum++;
                     startDate = startDate.Date.AddDays(1);
-                    Debug.WriteLine("startTime=" + startDate);
+                 //   Debug.WriteLine("startTime=" + startDate);
                 }
 
             }
@@ -359,6 +359,52 @@ namespace System.Windows.Forms.Calendar
             for (int i = 0; i < TimeUnits.Length; i++)
             {
                 TimeUnits[i].SetHighlighted(TimeUnits[i].CheckHighlighted());
+            }
+        }
+
+        public CalendarTimeScaleUnit FindUnit(DateTime time)
+        {
+            DateTime newTime = new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, 0);
+
+            foreach (CalendarTimeScaleUnit unit in _timeUnits)
+            {
+                if (unit.Date.CompareTo(newTime) == 0)
+                {
+                    return unit;
+                }
+            }
+
+            return null;
+        }
+
+        public void ArrangeItem()
+        {
+            List<CalendarItem> contains = new List<CalendarItem>();
+
+            for (int i = 0; i < Calendar.Items.Count; i++)
+            {
+                if (this.LineId == Calendar.Items[i].LineId)
+                {
+                    contains.Add(Calendar.Items[i]);
+                }
+            }
+
+            contains.Sort(CalendarRenderer.CompareItems);
+
+            for (int i = 0; i < contains.Count; i++)
+            {
+                CalendarItem currentItem = contains[i];
+                CalendarItem nextItem = i + 1 <= contains.Count - 1 ? contains[i + 1] : null;
+
+                if (nextItem != null)
+                {
+                    if (nextItem.StartDate.CompareTo(currentItem.EndDate) < 0)
+                    {
+                        TimeSpan duration = nextItem.Duration;
+                        nextItem.StartDate = currentItem.EndDate;
+                        nextItem.EndDate = nextItem.StartDate.Add(duration);
+                    }
+                }
             }
         }
 

@@ -223,6 +223,8 @@ namespace System.Windows.Forms.Calendar
         private List<LineInfo> lines;
         private DateTime _fromDate;
         private DateTime _toDate;
+        private int maxPriority;
+
         #endregion
 
         #region Ctor
@@ -251,7 +253,7 @@ namespace System.Windows.Forms.Calendar
                 new CalendarHighlightRange( DayOfWeek.Friday, new TimeSpan(8,0,0), new TimeSpan(17,0,0)),
             };
 
-            _timeScale = CalendarTimeScale.FifteenMinutes;
+            _timeScale = CalendarTimeScale.SixtyMinutes;
             //SetViewRange(DateTime.Now, DateTime.Now.AddDays(2));
             _daysMode = CalendarDaysMode.Expanded;
             _itemsDateFormat = "dd/MMM";
@@ -280,6 +282,7 @@ namespace System.Windows.Forms.Calendar
                 for (int i = 0; i < _days.Length; i++)
                 {
                     _days[i] = new CalendarDay(this, lines[i].LineId, i);
+                    _days[i].LineName = lines[i].LineName;
                 }
 
                 UpdateHighlights();
@@ -726,7 +729,8 @@ namespace System.Windows.Forms.Calendar
 
             item.StartDate = dstart;
             item.EndDate = dend.Add(duration);
-            item.Text = itemText;
+            item.Text = day.LineId + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss");
+            item.ItemId = Guid.NewGuid().ToString();
 
             CalendarItemCancelEventArgs evtA = new CalendarItemCancelEventArgs(item);
 
@@ -940,7 +944,7 @@ namespace System.Windows.Forms.Calendar
                             }
                         //}
 
-                        return Days[i];
+                        //return Days[i];
                     }
                     else if (DaysMode == CalendarDaysMode.Short)
                     {
@@ -1244,7 +1248,10 @@ namespace System.Windows.Forms.Calendar
             {
                 int max = Days[0].TimeUnits.Length - visible;
                 max *= -1;
-                if (possible < max) possible = max;
+                if (possible < max)
+                {
+                    possible = max;
+                }
             }
 
             if (possible != TimeUnitsOffset)
@@ -1465,7 +1472,7 @@ namespace System.Windows.Forms.Calendar
         {
             base.OnDoubleClick(e);
 
-            CreateItemOnSelection(string.Empty, true);
+            CreateItemOnSelection(string.Empty, false);
         }
 
         protected virtual void OnDayHeaderClick(CalendarDayEventArgs e)
@@ -1690,6 +1697,11 @@ namespace System.Windows.Forms.Calendar
                             ClearSelectedItems();
 
                         hittedItem.SetSelected(true);
+                        hittedItem.Priority = Math.Max(maxPriority, hittedItem.Priority);
+                        hittedItem.Priority++;
+                        maxPriority = hittedItem.Priority;
+                        Console.WriteLine("maxPriority=" + maxPriority);
+
                         Invalidate(hittedItem);
                         OnItemSelected(new CalendarItemEventArgs(hittedItem));
 
@@ -1756,12 +1768,13 @@ namespace System.Windows.Forms.Calendar
             CalendarItem hittedItem = hitted as CalendarItem;
             //CalendarDayTop hittedTop = hitted as CalendarDayTop;
             bool shiftPressed = (ModifierKeys & Keys.Shift) == Keys.Shift;
-
             if (hitted != null)
             {
+                CalendarDay day = null;
                 switch (State)
                 {
                     case CalendarState.Idle:
+                    //    Debug.WriteLine("CalendarState.Idle");
                         Cursor should = Cursors.Default;
 
                         if (hittedItem != null)
@@ -1777,16 +1790,22 @@ namespace System.Windows.Forms.Calendar
                         if (!Cursor.Equals(should)) Cursor = should;
                         break;
                     case CalendarState.DraggingTimeSelection:
+                        Debug.WriteLine("CalendarState.DraggingTimeSelection");
                         if (SelectedElementStart != null && !SelectedElementEnd.Equals(hitted))
                             SelectedElementEnd = hitted;
                         break;
                     case CalendarState.DraggingItem:
+                //        Debug.WriteLine("CalendarState.DraggingItem");
                         TimeSpan duration = itemOnState.Duration;
                         itemOnState.SetIsDragging(true);
                         itemOnState.LineId = ((CalendarTimeScaleUnit)hitted).Day.LineId;
                         itemOnState.StartDate = ((CalendarTimeScaleUnit)hitted).Date;
                         itemOnState.EndDate = itemOnState.StartDate.Add(duration);
-                 //       Debug.WriteLine("itemOnState.StartDate=" + ((CalendarTimeScaleUnit)hitted).Day.LineId);
+                        //Debug.WriteLine("itemOnState.LineId=" + itemOnState.LineId);
+                        
+                        day = this.FindDay(itemOnState.LineId);
+                        day.ArrangeItem();
+
                         Renderer.PerformItemsLayout();
                         Invalidate();
                         itemOnStateChanged = true;
@@ -1800,6 +1819,10 @@ namespace System.Windows.Forms.Calendar
                         {
                             itemOnState.StartDate = ((CalendarTimeScaleUnit)hitted).Date;
                         }
+
+                        day = this.FindDay(itemOnState.LineId);
+                        day.ArrangeItem();
+
                         Renderer.PerformItemsLayout();
                         Invalidate();
                         itemOnStateChanged = true;

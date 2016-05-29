@@ -66,6 +66,7 @@ namespace CalendarDemo
                         item.LineId = "Line1";
                     }
                     CalendarItem cal = new CalendarItem(calendar1, item.StartTime, item.EndTime, item.LineId, item.Text);
+                    cal.ItemId = Guid.NewGuid().ToString();
 
                     if (!(item.R == 0 && item.G == 0 && item.B == 0))
                     {
@@ -226,7 +227,7 @@ namespace CalendarDemo
 
         private void calendar1_ItemDoubleClick(object sender, CalendarItemEventArgs e)
         {
-            MessageBox.Show("Double click: " + e.Item.Text);
+            //MessageBox.Show("Double click: " + e.Item.Text);
         }
 
         private void calendar1_ItemDeleted(object sender, CalendarItemEventArgs e)

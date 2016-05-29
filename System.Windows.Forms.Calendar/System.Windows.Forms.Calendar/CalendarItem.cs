@@ -55,7 +55,9 @@ namespace System.Windows.Forms.Calendar
         private string _text;
         #endregion
         private String _lineId;
-
+        private int _priority;
+        private String _itemId;
+        
         #region Ctor
 
         /// <summary>
@@ -73,6 +75,7 @@ namespace System.Windows.Forms.Calendar
             _backgroundColorLighter = Color.Empty;
             _imageAlign = CalendarItemImageAlign.West;
             _lineId = lineId;
+            _priority = 0;
         }
 
         /// <summary>
@@ -104,6 +107,19 @@ namespace System.Windows.Forms.Calendar
         #endregion
 
         #region Properties
+
+        public String ItemId
+        {
+            get { return _itemId; }
+            set { _itemId = value; }
+        }
+
+        public int Priority
+        {
+            get { return _priority; }
+            set { _priority = value; }
+        }
+
         public String LineId
         {
             get { return _lineId; }
@@ -655,11 +671,42 @@ namespace System.Windows.Forms.Calendar
         /// </summary>
         /// <param name="time"></param>
         /// <returns></returns>
-        public bool IntersectsWith(TimeSpan timeStart, TimeSpan timeEnd)
+        //public bool IntersectsWith(TimeSpan timeStart, TimeSpan timeEnd)
+        //{
+        //    Rectangle r1 = Rectangle.FromLTRB(0, Convert.ToInt32(StartDate.TimeOfDay.TotalMinutes), 5, Convert.ToInt32(EndDate.TimeOfDay.TotalMinutes));
+        //    Rectangle r2 = Rectangle.FromLTRB(0, Convert.ToInt32(timeStart.TotalMinutes), 5, Convert.ToInt32(timeEnd.TotalMinutes - 1));
+        //    return r1.IntersectsWith(r2);
+        //}
+
+        public bool IntersectsWith(string lineId, DateTime timeStart, DateTime timeEnd)
         {
-            Rectangle r1 = Rectangle.FromLTRB(0, Convert.ToInt32(StartDate.TimeOfDay.TotalMinutes), 5, Convert.ToInt32(EndDate.TimeOfDay.TotalMinutes));
-            Rectangle r2 = Rectangle.FromLTRB(0, Convert.ToInt32(timeStart.TotalMinutes), 5, Convert.ToInt32(timeEnd.TotalMinutes - 1));
-            return r1.IntersectsWith(r2);
+            return lineId == this.LineId && ((timeStart.CompareTo(StartDate) <= 0 && timeEnd.CompareTo(EndDate) >= 0) || (StartDate.CompareTo(timeStart) <= 0 && EndDate.CompareTo(timeEnd) >= 0));
+        }
+
+        public bool IntersectsWith(CalendarItem anotheItem)
+        {
+            return this.IntersectsWith(anotheItem.LineId, anotheItem.StartDate, anotheItem.EndDate);
+        }
+
+
+        public int Comparer(CalendarItem anotherItem)
+        {
+            if (this.ItemId == anotherItem.ItemId)
+            {
+                return 0;
+            }
+
+            if (anotherItem.LineId != this.LineId)
+            {
+                return this.LineId.CompareTo(anotherItem.LineId);
+            }
+
+            if (this.IntersectsWith(anotherItem))
+            {
+                return this.Priority.CompareTo(anotherItem.Priority) * -1;
+            }
+
+            return this.StartDate.CompareTo(anotherItem.StartDate);
         }
 
         public override string ToString()
