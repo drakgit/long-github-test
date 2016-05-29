@@ -1371,6 +1371,7 @@ namespace System.Windows.Forms.Calendar
 
                 if (!unit.Visible) continue;
 
+                DateTime day = unit.Date.Date;
                 string hours = unit.Hours.ToString("00");
                 string minutes = unit.Minutes == 0 ? "00" : string.Empty;
 
@@ -1384,7 +1385,11 @@ namespace System.Windows.Forms.Calendar
 
                     OnDrawTimeScaleHour(hevt);
 
-                    if (k++ == 0 || unit.Hours == 0 || unit.Hours == 12 ) minutes = unit.Date.ToString("tt");
+                    if (k++ == 0 || unit.Hours == 0 || unit.Hours == 12)
+                    {
+                        minutes = unit.Date.ToString("tt") + day.ToString("dd/MM/yyyy");
+
+                    }
 
                     CalendarRendererBoxEventArgs mevt = new CalendarRendererBoxEventArgs(e, new Rectangle(minuteLeft, unit.Bounds.Top, minuteWidth, unit.Bounds.Height), minutes, TextFormatFlags.Top | TextFormatFlags.Left);
 
@@ -1916,24 +1921,24 @@ namespace System.Windows.Forms.Calendar
         /// Paints the headers of the week rows when <see cref="Calendar.DaysMode"/> is <see cref="CalendarDaysMode.Short"/>
         /// </summary>
         /// <param name="e"></param>
-        public virtual void OnDrawWeekHeaders(CalendarRendererEventArgs e)
-        {
-            if (Calendar.Weeks == null) return;
+        //public virtual void OnDrawWeekHeaders(CalendarRendererEventArgs e)
+        //{
+        //    if (Calendar.Weeks == null) return;
 
-            for (int i = 0; i < Calendar.Weeks.Length; i++)
-            {
-                string str = Calendar.Weeks[i].ToStringLarge();
-                SizeF sz = e.Graphics.MeasureString(str, e.Calendar.Font);
+        //    for (int i = 0; i < Calendar.Weeks.Length; i++)
+        //    {
+        //        string str = Calendar.Weeks[i].ToStringLarge();
+        //        SizeF sz = e.Graphics.MeasureString(str, e.Calendar.Font);
 
-                if (sz.Width > Calendar.Weeks[i].HeaderBounds.Height)
-                {
-                    str = Calendar.Weeks[i].ToStringShort();
-                }
+        //        if (sz.Width > Calendar.Weeks[i].HeaderBounds.Height)
+        //        {
+        //            str = Calendar.Weeks[i].ToStringShort();
+        //        }
 
-                OnDrawWeekHeader(new CalendarRendererBoxEventArgs(e,
-                    Calendar.Weeks[i].HeaderBounds, str,  TextFormatFlags.Default));
-            }
-        }
+        //        OnDrawWeekHeader(new CalendarRendererBoxEventArgs(e,
+        //            Calendar.Weeks[i].HeaderBounds, str,  TextFormatFlags.Default));
+        //    }
+        //}
 
         /// <summary>
         /// Paints the header of a week row when <see cref="Calendar.DaysMode"/> is <see cref="CalendarDaysMode.Short"/>

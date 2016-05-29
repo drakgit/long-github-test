@@ -340,10 +340,10 @@ namespace System.Windows.Forms.Calendar
             base.OnDrawItemText(e);
         }
 
-        public override void OnDrawWeekHeaders(CalendarRendererEventArgs e)
-        {
-            base.OnDrawWeekHeaders(e);
-        }
+        //public override void OnDrawWeekHeaders(CalendarRendererEventArgs e)
+        //{
+        //    base.OnDrawWeekHeaders(e);
+        //}
 
         public override void OnDrawDayNameHeader(CalendarRendererBoxEventArgs e)
         {

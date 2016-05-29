@@ -211,9 +211,9 @@ namespace System.Windows.Forms.Calendar
         private CalendarState _state;
         private CalendarTimeScale _timeScale;
         private int _timeUnitsOffset;
-        private DateTime _viewEnd;
-        private DateTime _viewStart;
-        private CalendarWeek[] _weeks;
+        //private DateTime _viewEnd;
+        //private DateTime _viewStart;
+        //private CalendarWeek[] _weeks;
         private List<CalendarSelectableElement> _selectedElements;
         private ICalendarSelectableElement _selectedElementEnd;
         private ICalendarSelectableElement _selectedElementStart;
@@ -254,15 +254,22 @@ namespace System.Windows.Forms.Calendar
             };
 
             _timeScale = CalendarTimeScale.SixtyMinutes;
-            //SetViewRange(DateTime.Now, DateTime.Now.AddDays(2));
+            SetViewRange(DateTime.Now, DateTime.Now.AddDays(0));
             _daysMode = CalendarDaysMode.Expanded;
             _itemsDateFormat = "dd/MMM";
             _itemsTimeFormat = "hh:mm tt";
             _allowItemEdit = true;
             _allowNew = true;
             _allowItemResize = true;
-            _fromDate = DateTime.Now.Date;
-            _toDate = _fromDate.AddDays(2);
+         //   _fromDate = DateTime.Now.Date;
+          //  ToDate = _fromDate.AddDays(0);
+
+            //_days = new CalendarDay[1];
+            //_days[0] = new CalendarDay(this, "LineTemp", 0);
+            //_days[0].LineName = "LineTemp";
+            List<LineInfo> info = new List<LineInfo>();
+            info.Add(new LineInfo("LineTemp", "LineTemp"));
+            Lines = info;
         }
 
 
@@ -277,6 +284,7 @@ namespace System.Windows.Forms.Calendar
             {
                 ClearItems();
                 lines = value;
+                if (lines == null) return;
                 _days = new CalendarDay[lines.Count];
 
                 for (int i = 0; i < _days.Length; i++)
@@ -295,13 +303,24 @@ namespace System.Windows.Forms.Calendar
         public DateTime FromDate
         {
             get { return _fromDate; }
-            set { _fromDate = value; }
+            set {
+                _fromDate = value;
+            }
         }
 
         public DateTime ToDate
         {
             get { return _toDate; }
-            set { _toDate = value; }
+            set { 
+                //_toDate = value;
+                _toDate = value.Date.Add(new TimeSpan(23, 59, 59));
+                ClearItems();
+                //    UpdateDaysAndWeeks();
+                UpdateHighlights();
+                Renderer.PerformLayout();
+                Invalidate();
+                ReloadItems();
+            }
         }
         /// <summary>
         /// Gets or sets a value indicating if the control let's the user create new items.
@@ -635,10 +654,10 @@ namespace System.Windows.Forms.Calendar
         /// <summary>
         /// Gets the weeks currently visible on the calendar, if <see cref="DaysMode"/> is <see cref="CalendarDaysMode.Short"/>
         /// </summary>
-        public CalendarWeek[] Weeks
-        {
-            get { return _weeks; }
-        }
+        //public CalendarWeek[] Weeks
+        //{
+        //    get { return _weeks; }
+        //}
 
 
         #endregion
@@ -729,7 +748,7 @@ namespace System.Windows.Forms.Calendar
 
             item.StartDate = dstart;
             item.EndDate = dend.Add(duration);
-            item.Text = day.LineId + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss");
+            item.Text = day.LineId + "_" + dstart.ToString("ddMMyyyyHHmmss");
             item.ItemId = Guid.NewGuid().ToString();
 
             CalendarItemCancelEventArgs evtA = new CalendarItemCancelEventArgs(item);
@@ -1018,11 +1037,13 @@ namespace System.Windows.Forms.Calendar
         /// </summary>
         /// <param name="dateStart">Start date of view</param>
         /// <param name="dateEnd">End date of view</param>
-        //public void SetViewRange(DateTime dateStart, DateTime dateEnd)
-        //{
-        //    _viewStart = dateStart.Date;
-        //    ViewEnd = dateEnd;
-        //}
+        public void SetViewRange(DateTime dateStart, DateTime dateEnd)
+        {
+            _fromDate = dateStart;
+            ToDate = dateEnd;
+            //_viewStart = dateStart.Date;
+            //ViewEnd = dateEnd;
+        }
 
         /// <summary>
         /// Returns a value indicating if the view range intersects the specified date range.
@@ -1151,7 +1172,7 @@ namespace System.Windows.Forms.Calendar
         /// </summary>
         private void ReloadItems()
         {
-            //OnLoadItems(new CalendarLoadEventArgs(this, ViewStart, ViewEnd));
+            //OnLoadItems(new CalendarLoadEventArgs(this, FromDate, ToDate));
         }
 
         /// <summary>
@@ -1912,7 +1933,7 @@ namespace System.Windows.Forms.Calendar
             {
                 case CalendarDaysMode.Short:
                     Renderer.OnDrawDayNameHeaders(evt);
-                    Renderer.OnDrawWeekHeaders(evt);
+                    //Renderer.OnDrawWeekHeaders(evt);
                     break;
                 case CalendarDaysMode.Expanded:
                     Renderer.OnDrawTimeScale(evt);

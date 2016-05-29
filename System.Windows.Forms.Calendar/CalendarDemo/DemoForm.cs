@@ -46,6 +46,7 @@ namespace CalendarDemo
             lines.Add(new LineInfo("Line5", "Line 5"));
 
             calendar1.Lines = lines;
+            calendar1.SetViewRange(DateTime.Now, DateTime.Now.AddDays(0));
 
             if (ItemsFile.Exists)
             {
@@ -292,7 +293,7 @@ namespace CalendarDemo
 
         private void monthView1_SelectionChanged(object sender, EventArgs e)
         {
-            //calendar1.SetViewRange(monthView1.SelectionStart, monthView1.SelectionEnd);
+            calendar1.SetViewRange(monthView1.SelectionStart, monthView1.SelectionEnd);
         }
 
         private void northToolStripMenuItem_Click(object sender, EventArgs e)
@@ -351,5 +352,56 @@ namespace CalendarDemo
 
             
         }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            calendar1.Lines = containLine(calendar1.Lines, "Line5", "Line 5");
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            calendar1.Lines = containLine(calendar1.Lines, "Line3", "Line 3");
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            calendar1.Lines = containLine(calendar1.Lines, "Line4", "Line 4");
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            calendar1.Lines = containLine(calendar1.Lines, "Line2", "Line 2");
+        }
+
+        List<LineInfo> containLine(List<LineInfo> lines, String lineId, String lineName)
+        {
+            bool found = false;
+
+            foreach (LineInfo l in lines)
+            {
+                if (l.LineId == lineId)
+                {
+                    found = true;
+                    lines.Remove(l);
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                lines.Add(new LineInfo(lineId, lineName));
+            }
+
+            lines.Sort(CompareLine);
+            return lines;
+        }
+
+        private static int CompareLine(LineInfo r1, LineInfo r2)
+        {
+            return r1.LineId.CompareTo(r2.LineId);
+        } 
     }
 }
