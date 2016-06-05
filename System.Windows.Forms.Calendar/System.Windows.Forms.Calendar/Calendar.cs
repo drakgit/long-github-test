@@ -199,7 +199,7 @@ namespace System.Windows.Forms.Calendar
         private CalendarItem _editModeItem;
         private bool _finalizingEdition;
         private DayOfWeek _firstDayOfWeek;
-        private CalendarHighlightRange[] _highlightRanges;
+        //private CalendarHighlightRange[] _highlightRanges;
         private CalendarItemCollection _items;
         private string _itemsDateFormat;
         private string _itemsTimeFormat; 
@@ -234,6 +234,10 @@ namespace System.Windows.Forms.Calendar
         /// </summary>
         public Calendar()
         {
+            //this.HorizontalScroll.Enabled = true;
+
+            this.VerticalScroll.Enabled = true;
+
             SetStyle(ControlStyles.ResizeRedraw, true);
             SetStyle(ControlStyles.Selectable, true);
 
@@ -245,16 +249,16 @@ namespace System.Windows.Forms.Calendar
             _maximumFullDays = 8;
             _maximumViewDays = 35;
             
-            HighlightRanges = new CalendarHighlightRange[] { 
-                new CalendarHighlightRange( DayOfWeek.Monday, new TimeSpan(8,0,0), new TimeSpan(17,0,0)),
-                new CalendarHighlightRange( DayOfWeek.Tuesday, new TimeSpan(8,0,0), new TimeSpan(17,0,0)),
-                new CalendarHighlightRange( DayOfWeek.Wednesday, new TimeSpan(8,0,0), new TimeSpan(17,0,0)),
-                new CalendarHighlightRange( DayOfWeek.Thursday, new TimeSpan(8,0,0), new TimeSpan(17,0,0)),
-                new CalendarHighlightRange( DayOfWeek.Friday, new TimeSpan(8,0,0), new TimeSpan(17,0,0)),
-            };
+            //HighlightRanges = new CalendarHighlightRange[] { 
+            //    new CalendarHighlightRange( DayOfWeek.Monday, new TimeSpan(8,0,0), new TimeSpan(17,0,0)),
+            //    new CalendarHighlightRange( DayOfWeek.Tuesday, new TimeSpan(8,0,0), new TimeSpan(17,0,0)),
+            //    new CalendarHighlightRange( DayOfWeek.Wednesday, new TimeSpan(8,0,0), new TimeSpan(17,0,0)),
+            //    new CalendarHighlightRange( DayOfWeek.Thursday, new TimeSpan(8,0,0), new TimeSpan(17,0,0)),
+            //    new CalendarHighlightRange( DayOfWeek.Friday, new TimeSpan(8,0,0), new TimeSpan(17,0,0)),
+            //};
 
             _timeScale = CalendarTimeScale.SixtyMinutes;
-            SetViewRange(DateTime.Now, DateTime.Now.AddDays(0));
+            SetViewRange(DateTime.Now, DateTime.Now.AddDays(3));
             _daysMode = CalendarDaysMode.Expanded;
             _itemsDateFormat = "dd/MMM";
             _itemsTimeFormat = "hh:mm tt";
@@ -277,12 +281,25 @@ namespace System.Windows.Forms.Calendar
 
         #region Properties
 
+        public DateTime SelectedDate
+        {
+            get
+            {
+                if (_selectedElementStart == null || _selectedElements.Count <= 0)
+                    return FromDate;
+
+                if (_selectedElements[0].GetType() != typeof(CalendarTimeScaleUnit))
+                    return FromDate;
+
+                return ((CalendarTimeScaleUnit)_selectedElements[0]).Date;
+            }
+        }
         public List<LineInfo> Lines
         {
             get { return lines; }
             set
             {
-                ClearItems();
+                //ClearItems();
                 lines = value;
                 if (lines == null) return;
                 _days = new CalendarDay[lines.Count];
@@ -291,6 +308,7 @@ namespace System.Windows.Forms.Calendar
                 {
                     _days[i] = new CalendarDay(this, lines[i].LineId, i);
                     _days[i].LineName = lines[i].LineName;
+                    _days[i].UpdateUnits();
                 }
 
                 UpdateHighlights();
@@ -304,7 +322,7 @@ namespace System.Windows.Forms.Calendar
         {
             get { return _fromDate; }
             set {
-                _fromDate = value;
+                _fromDate = value.Date.Add(new TimeSpan(0, 0, 0));
             }
         }
 
@@ -314,8 +332,9 @@ namespace System.Windows.Forms.Calendar
             set { 
                 //_toDate = value;
                 _toDate = value.Date.Add(new TimeSpan(23, 59, 59));
-                ClearItems();
-                //    UpdateDaysAndWeeks();
+                //ClearItems();
+
+                UpdateUnits();
                 UpdateHighlights();
                 Renderer.PerformLayout();
                 Invalidate();
@@ -424,11 +443,11 @@ namespace System.Windows.Forms.Calendar
         /// Gets or sets the time ranges that should be highlighted as work-time.
         /// This ranges are week based.
         /// </summary>
-        public CalendarHighlightRange[] HighlightRanges
-        {
-            get { return _highlightRanges; }
-            set { _highlightRanges = value; UpdateHighlights(); }
-        }
+        //public CalendarHighlightRange[] HighlightRanges
+        //{
+        //    get { return _highlightRanges; }
+        //    set { _highlightRanges = value; UpdateHighlights(); }
+        //}
 
         /// <summary>
         /// Gets the collection of items currently on the view.
@@ -1039,7 +1058,7 @@ namespace System.Windows.Forms.Calendar
         /// <param name="dateEnd">End date of view</param>
         public void SetViewRange(DateTime dateStart, DateTime dateEnd)
         {
-            _fromDate = dateStart;
+            FromDate = dateStart;
             ToDate = dateEnd;
             //_viewStart = dateStart.Date;
             //ViewEnd = dateEnd;
@@ -1100,7 +1119,7 @@ namespace System.Windows.Forms.Calendar
         private void ClearItems()
         {
             Items.Clear();
-            Renderer.DayTopHeight = Renderer.DayTopMinHeight;
+            //Renderer.DayTopHeight = Renderer.DayTopMinHeight;
         }
 
         /// <summary>
@@ -1172,7 +1191,7 @@ namespace System.Windows.Forms.Calendar
         /// </summary>
         private void ReloadItems()
         {
-            //OnLoadItems(new CalendarLoadEventArgs(this, FromDate, ToDate));
+            OnLoadItems(new CalendarLoadEventArgs(this, FromDate, ToDate));
         }
 
         /// <summary>
@@ -1260,15 +1279,19 @@ namespace System.Windows.Forms.Calendar
                 && Days[0].TimeUnits != null
                 && possible * -1 >= Days[0].TimeUnits.Length)
             {
+               //// Console.WriteLine("1possible=" + possible);
                 possible = Days[0].TimeUnits.Length - 1;
                 possible *= -1;
+
             }
             else if (Days != null
                && Days.Length > 0
                && Days[0].TimeUnits != null)
             {
+                //Console.WriteLine("2possible=" + possible);
                 int max = Days[0].TimeUnits.Length - visible;
                 max *= -1;
+                //Console.WriteLine("2 visible=" + visible + ",max=" + max);
                 if (possible < max)
                 {
                     possible = max;
@@ -1397,6 +1420,16 @@ namespace System.Windows.Forms.Calendar
             }
         }
 
+        internal void UpdateUnits()
+        {
+            if (Days == null) return;
+
+            for (int i = 0; i < Days.Length; i++)
+            {
+                Days[i].UpdateUnits();
+            }
+        }
+
         /// <summary>
         /// Informs elements who's selected and who's not, and repaints <see cref="_selectedElementSquare"/>
         /// </summary>
@@ -1428,7 +1461,7 @@ namespace System.Windows.Forms.Calendar
             if (unitStart != null && unitEnd != null)
             {
                 bool reached = false;
-                for (int i = unitStart.Day.Index; !reached; i++)
+                for (int i = unitStart.Day.Index; !reached && i < Days.Length; i++)
                 {
                     for (int j = (i == unitStart.Day.Index ? unitStart.Index : 0); i < Days.Length && j < Days[i].TimeUnits.Length; j++)
                     {
@@ -1721,7 +1754,7 @@ namespace System.Windows.Forms.Calendar
                         hittedItem.Priority = Math.Max(maxPriority, hittedItem.Priority);
                         hittedItem.Priority++;
                         maxPriority = hittedItem.Priority;
-                        Console.WriteLine("maxPriority=" + maxPriority);
+                 //       Console.WriteLine("maxPriority=" + maxPriority);
 
                         Invalidate(hittedItem);
                         OnItemSelected(new CalendarItemEventArgs(hittedItem));

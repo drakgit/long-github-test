@@ -176,11 +176,13 @@ namespace System.Windows.Forms.Calendar
 
                 e.Graphics.FillRectangle(b, e.Unit.Bounds);
             }
-
-            using (Pen p = new Pen(e.Unit.Minutes == 0 ? ColorTable.TimeUnitBorderDark : ColorTable.TimeUnitBorderLight))
+         //   Console.WriteLine("e.Unit.Hours=" + e.Unit.Hours+ " ,e.Unit.Minutes=" + e.Unit.Minutes);
+            using (Pen p = new Pen(e.Unit.Hours == 0 && e.Unit.Minutes == 0 ? ColorTable.TimeUnitBorderDark : ColorTable.TimeUnitBorderLight, e.Unit.Hours == 0 && e.Unit.Minutes == 0 ? 2 : 1))
             {
                 e.Graphics.DrawLine(p, e.Unit.Bounds.Location, new Point(e.Unit.Bounds.Right, e.Unit.Bounds.Top)); 
             }
+
+
 
             //TextRenderer.DrawText(e.Graphics, e.Unit.PassingItems.Count.ToString(), e.Calendar.Font, e.Unit.Bounds, Color.Black);
         }

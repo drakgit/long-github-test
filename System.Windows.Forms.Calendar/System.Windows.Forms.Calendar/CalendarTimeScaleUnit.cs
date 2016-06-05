@@ -161,20 +161,20 @@ namespace System.Windows.Forms.Calendar
         /// <returns></returns>
         internal bool CheckHighlighted()
         {
-            for (int i = 0; i < Day.Calendar.HighlightRanges.Length; i++)
-            {
-                CalendarHighlightRange range = Day.Calendar.HighlightRanges[i];
+            //for (int i = 0; i < Day.Calendar.HighlightRanges.Length; i++)
+            //{
+            //    CalendarHighlightRange range = Day.Calendar.HighlightRanges[i];
 
-                if (range.DayOfWeek != Date.DayOfWeek) 
-                    continue;
+            //    if (range.DayOfWeek != Date.DayOfWeek) 
+            //        continue;
 
-                if (Date.TimeOfDay.CompareTo(range.StartTime) >= 0
-                    && Date.TimeOfDay.CompareTo(range.EndTime) < 0 )
-                {
-                    return true;
-                }
+            //    if (Date.TimeOfDay.CompareTo(range.StartTime) >= 0
+            //        && Date.TimeOfDay.CompareTo(range.EndTime) < 0 )
+            //    {
+            //        return true;
+            //    }
 
-            }
+            //}
             return false;
         }
 

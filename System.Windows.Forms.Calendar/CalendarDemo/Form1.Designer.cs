@@ -29,11 +29,11 @@ namespace CalendarDemo
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.Calendar.CalendarHighlightRange calendarHighlightRange6 = new System.Windows.Forms.Calendar.CalendarHighlightRange();
-            System.Windows.Forms.Calendar.CalendarHighlightRange calendarHighlightRange7 = new System.Windows.Forms.Calendar.CalendarHighlightRange();
-            System.Windows.Forms.Calendar.CalendarHighlightRange calendarHighlightRange8 = new System.Windows.Forms.Calendar.CalendarHighlightRange();
-            System.Windows.Forms.Calendar.CalendarHighlightRange calendarHighlightRange9 = new System.Windows.Forms.Calendar.CalendarHighlightRange();
-            System.Windows.Forms.Calendar.CalendarHighlightRange calendarHighlightRange10 = new System.Windows.Forms.Calendar.CalendarHighlightRange();
+            System.Windows.Forms.Calendar.CalendarHighlightRange calendarHighlightRange1 = new System.Windows.Forms.Calendar.CalendarHighlightRange();
+            System.Windows.Forms.Calendar.CalendarHighlightRange calendarHighlightRange2 = new System.Windows.Forms.Calendar.CalendarHighlightRange();
+            System.Windows.Forms.Calendar.CalendarHighlightRange calendarHighlightRange3 = new System.Windows.Forms.Calendar.CalendarHighlightRange();
+            System.Windows.Forms.Calendar.CalendarHighlightRange calendarHighlightRange4 = new System.Windows.Forms.Calendar.CalendarHighlightRange();
+            System.Windows.Forms.Calendar.CalendarHighlightRange calendarHighlightRange5 = new System.Windows.Forms.Calendar.CalendarHighlightRange();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.redTagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.yellowTagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -65,13 +65,13 @@ namespace CalendarDemo
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.editItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitter1 = new System.Windows.Forms.Splitter();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.calendar1 = new System.Windows.Forms.Calendar.Calendar();
             this.monthView1 = new System.Windows.Forms.Calendar.MonthView();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -315,6 +315,59 @@ namespace CalendarDemo
             this.splitter1.TabIndex = 4;
             this.splitter1.TabStop = false;
             // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.button5);
+            this.panel1.Controls.Add(this.button4);
+            this.panel1.Controls.Add(this.button3);
+            this.panel1.Controls.Add(this.button2);
+            this.panel1.Location = new System.Drawing.Point(213, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(610, 82);
+            this.panel1.TabIndex = 5;
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(317, 12);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(75, 23);
+            this.button5.TabIndex = 0;
+            this.button5.Text = "Line 5";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(212, 12);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 0;
+            this.button4.Text = "Line 4";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(111, 12);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 0;
+            this.button3.Text = "Line 3";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(11, 12);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 0;
+            this.button2.Text = "Line 2";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // calendar1
             // 
             this.calendar1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -323,27 +376,21 @@ namespace CalendarDemo
             this.calendar1.ContextMenuStrip = this.contextMenuStrip1;
             this.calendar1.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.calendar1.FromDate = new System.DateTime(2016, 5, 29, 0, 0, 0, 0);
-            calendarHighlightRange6.DayOfWeek = System.DayOfWeek.Monday;
-            calendarHighlightRange6.EndTime = System.TimeSpan.Parse("17:00:00");
-            calendarHighlightRange6.StartTime = System.TimeSpan.Parse("08:00:00");
-            calendarHighlightRange7.DayOfWeek = System.DayOfWeek.Tuesday;
-            calendarHighlightRange7.EndTime = System.TimeSpan.Parse("17:00:00");
-            calendarHighlightRange7.StartTime = System.TimeSpan.Parse("08:00:00");
-            calendarHighlightRange8.DayOfWeek = System.DayOfWeek.Wednesday;
-            calendarHighlightRange8.EndTime = System.TimeSpan.Parse("17:00:00");
-            calendarHighlightRange8.StartTime = System.TimeSpan.Parse("08:00:00");
-            calendarHighlightRange9.DayOfWeek = System.DayOfWeek.Thursday;
-            calendarHighlightRange9.EndTime = System.TimeSpan.Parse("17:00:00");
-            calendarHighlightRange9.StartTime = System.TimeSpan.Parse("08:00:00");
-            calendarHighlightRange10.DayOfWeek = System.DayOfWeek.Friday;
-            calendarHighlightRange10.EndTime = System.TimeSpan.Parse("17:00:00");
-            calendarHighlightRange10.StartTime = System.TimeSpan.Parse("08:00:00");
-            this.calendar1.HighlightRanges = new System.Windows.Forms.Calendar.CalendarHighlightRange[] {
-        calendarHighlightRange6,
-        calendarHighlightRange7,
-        calendarHighlightRange8,
-        calendarHighlightRange9,
-        calendarHighlightRange10};
+            calendarHighlightRange1.DayOfWeek = System.DayOfWeek.Monday;
+            calendarHighlightRange1.EndTime = System.TimeSpan.Parse("17:00:00");
+            calendarHighlightRange1.StartTime = System.TimeSpan.Parse("08:00:00");
+            calendarHighlightRange2.DayOfWeek = System.DayOfWeek.Tuesday;
+            calendarHighlightRange2.EndTime = System.TimeSpan.Parse("17:00:00");
+            calendarHighlightRange2.StartTime = System.TimeSpan.Parse("08:00:00");
+            calendarHighlightRange3.DayOfWeek = System.DayOfWeek.Wednesday;
+            calendarHighlightRange3.EndTime = System.TimeSpan.Parse("17:00:00");
+            calendarHighlightRange3.StartTime = System.TimeSpan.Parse("08:00:00");
+            calendarHighlightRange4.DayOfWeek = System.DayOfWeek.Thursday;
+            calendarHighlightRange4.EndTime = System.TimeSpan.Parse("17:00:00");
+            calendarHighlightRange4.StartTime = System.TimeSpan.Parse("08:00:00");
+            calendarHighlightRange5.DayOfWeek = System.DayOfWeek.Friday;
+            calendarHighlightRange5.EndTime = System.TimeSpan.Parse("17:00:00");
+            calendarHighlightRange5.StartTime = System.TimeSpan.Parse("08:00:00");
             this.calendar1.Lines = null;
             this.calendar1.Location = new System.Drawing.Point(213, 89);
             this.calendar1.Name = "calendar1";
@@ -351,7 +398,7 @@ namespace CalendarDemo
             this.calendar1.TabIndex = 2;
             this.calendar1.Text = "calendar1";
             this.calendar1.TimeScale = System.Windows.Forms.Calendar.CalendarTimeScale.SixtyMinutes;
-            this.calendar1.ToDate = new System.DateTime(2016, 6, 1, 0, 0, 0, 0);
+            this.calendar1.ToDate = new System.DateTime(2016, 5, 30, 23, 59, 59, 0);
             this.calendar1.LoadItems += new System.Windows.Forms.Calendar.Calendar.CalendarLoadEventHandler(this.calendar1_LoadItems);
             this.calendar1.DayHeaderClick += new System.Windows.Forms.Calendar.Calendar.CalendarDayEventHandler(this.calendar1_DayHeaderClick);
             this.calendar1.ItemCreated += new System.Windows.Forms.Calendar.Calendar.CalendarItemCancelEventHandler(this.calendar1_ItemCreated);
@@ -383,59 +430,6 @@ namespace CalendarDemo
             this.monthView1.Text = "monthView1";
             this.monthView1.TodayBorderColor = System.Drawing.Color.Maroon;
             this.monthView1.SelectionChanged += new System.EventHandler(this.monthView1_SelectionChanged);
-            // 
-            // panel1
-            // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Controls.Add(this.button5);
-            this.panel1.Controls.Add(this.button4);
-            this.panel1.Controls.Add(this.button3);
-            this.panel1.Controls.Add(this.button2);
-            this.panel1.Location = new System.Drawing.Point(213, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(610, 82);
-            this.panel1.TabIndex = 5;
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(11, 12);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 0;
-            this.button2.Text = "Line 2";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(111, 12);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 0;
-            this.button3.Text = "Line 3";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(212, 12);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 0;
-            this.button4.Text = "Line 4";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(317, 12);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 23);
-            this.button5.TabIndex = 0;
-            this.button5.Text = "Line 5";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // DemoForm
             // 

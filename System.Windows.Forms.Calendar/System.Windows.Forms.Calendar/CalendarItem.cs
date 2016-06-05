@@ -336,7 +336,7 @@ namespace System.Windows.Forms.Calendar
         {
             get
             {
-                return StartDate.Day != EndDate.AddSeconds(1).Day;
+                return false;// StartDate.Day != EndDate.AddSeconds(1).Day;
             }
         }
 

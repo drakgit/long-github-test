@@ -35,8 +35,8 @@ namespace System.Windows.Forms.Calendar
         private CalendarTimeScaleUnit[] _timeUnits;
         private String _lineId;
         private String _lineName;
-        private DateTime _fromDate;
-        private DateTime _toDate;
+        //private DateTime _fromDate;
+        //private DateTime _toDate;
         #endregion
 
 
@@ -58,8 +58,8 @@ namespace System.Windows.Forms.Calendar
        //     _date = date;
             _index = index;
             _lineId = lineId;
-            _fromDate = calendar.FromDate;
-            _toDate = calendar.ToDate;
+            //_fromDate = calendar.FromDate;
+            //_toDate = calendar.ToDate;
 
             UpdateUnits();
         }
@@ -68,17 +68,17 @@ namespace System.Windows.Forms.Calendar
 
         #region Properties
 
-        public DateTime FromDate
-        {
-            get { return _fromDate; }
-            set { _fromDate = value; }
-        }
+        //public DateTime FromDate
+        //{
+        //    get { return _fromDate; }
+        //    set { _fromDate = value; }
+        //}
 
-        public DateTime ToDate
-        {
-            get { return _toDate; }
-            set { _toDate = value; }
-        }
+        //public DateTime ToDate
+        //{
+        //    get { return _toDate; }
+        //    set { _toDate = value; }
+        //}
 
         public String LineId
         {
@@ -314,7 +314,9 @@ namespace System.Windows.Forms.Calendar
                 case CalendarTimeScale.FiveMinutes:     factor = 12;    break;
                 default: throw new NotImplementedException("TimeScale not supported");
             }
-            int totalHours = (int)((_toDate - _fromDate).TotalHours + 0.5);
+            int totalHours = (int)((Calendar.ToDate - Calendar.FromDate).TotalHours + 0.5);
+
+            //Console.WriteLine("Calendar.ToDate=" + Calendar.ToDate + " Calendar.FromDate=" + Calendar.FromDate + " totalHours=" + totalHours);
 
             _timeUnits = new CalendarTimeScaleUnit[totalHours * factor];
             
@@ -322,10 +324,14 @@ namespace System.Windows.Forms.Calendar
             int minSum = 0;
             int daySum = 0;
 
-            DateTime startDate = _fromDate.Date;
+            bool highlighted = false;
+
+            DateTime startDate = Calendar.FromDate.Date;
             for (int i = 0; i < _timeUnits.Length; i++)
             {
                 _timeUnits[i] = new CalendarTimeScaleUnit(this, i, startDate.Date, hourSum, minSum);
+                _timeUnits[i].SetHighlighted(highlighted);
+                //Console.WriteLine("_timeUnits[" + i + "]=" + _timeUnits[i].Highlighted);
 
                 minSum += 60 / factor;
 
@@ -340,6 +346,7 @@ namespace System.Windows.Forms.Calendar
                     hourSum = 0;
                     daySum++;
                     startDate = startDate.Date.AddDays(1);
+                    highlighted = !highlighted;
                  //   Debug.WriteLine("startTime=" + startDate);
                 }
 
@@ -356,10 +363,10 @@ namespace System.Windows.Forms.Calendar
             if (TimeUnits == null) 
                 return;
 
-            for (int i = 0; i < TimeUnits.Length; i++)
-            {
-                TimeUnits[i].SetHighlighted(TimeUnits[i].CheckHighlighted());
-            }
+            //for (int i = 0; i < TimeUnits.Length; i++)
+            //{
+            //    TimeUnits[i].SetHighlighted(TimeUnits[i].CheckHighlighted());
+            //}
         }
 
         public CalendarTimeScaleUnit FindUnit(DateTime time)

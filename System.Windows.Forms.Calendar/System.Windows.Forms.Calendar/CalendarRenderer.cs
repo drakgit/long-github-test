@@ -200,21 +200,21 @@ namespace System.Windows.Forms.Calendar
         /// <summary>
         /// Gets the current height of the all day items area
         /// </summary>
-        public virtual int DayTopHeight
-        {
-            get 
-            {
-                if (_dayTopHeight == 0)
-                {
-                    _dayTopHeight = DayTopMinHeight;
-                }
-                return _dayTopHeight; 
-            }
-            set
-            {
-                _dayTopHeight = value;
-            }
-        }
+        //public virtual int DayTopHeight
+        //{
+        //    get 
+        //    {
+        //        if (_dayTopHeight == 0)
+        //        {
+        //            _dayTopHeight = DayTopMinHeight;
+        //        }
+        //        return _dayTopHeight; 
+        //    }
+        //    set
+        //    {
+        //        _dayTopHeight = value;
+        //    }
+        //}
 
         /// <summary>
         /// Gets the height of items on day tops
@@ -395,7 +395,7 @@ namespace System.Windows.Forms.Calendar
             {
                 if (_timeScaleWidth == 0)
                 {
-                    _timeScaleWidth = 60;
+                    _timeScaleWidth = 80;
                 }
                 return _timeScaleWidth; 
             }
@@ -446,10 +446,15 @@ namespace System.Windows.Forms.Calendar
             
             CalendarTimeScaleUnit unit = Calendar.Days[0].FindUnit(time);// .TimeUnits[unitIndex];
 
-            int minuteHeight = Convert.ToInt32(Convert.ToDouble(unit.Bounds.Height) / duration);
+            if (unit != null)
+            {
 
-            return unit.Bounds.Top + minuteHeight * Convert.ToInt32(module);
-            
+                int minuteHeight = Convert.ToInt32(Convert.ToDouble(unit.Bounds.Height) / duration);
+
+                return unit.Bounds.Top + minuteHeight * Convert.ToInt32(module);
+            }
+
+            return 0;
         }
 
         /// <summary>
@@ -698,7 +703,7 @@ namespace System.Windows.Forms.Calendar
         {
             if (Calendar.Days == null || Calendar.Items.Count == 0) return;
             bool alldaychanged = false;
-            int offset = Math.Abs(Calendar.TimeUnitsOffset);
+          //  int offset = Math.Abs(Calendar.TimeUnitsOffset);
             List<CalendarItem> itemsOnScene = new List<CalendarItem>();
 
             foreach (CalendarDay day in Calendar.Days)
@@ -728,14 +733,14 @@ namespace System.Windows.Forms.Calendar
                 //    }
                 //}
 
-                Calendar.Items.Sort(CompareItems);
+                //Calendar.Items.Sort(CompareItems);
 
-                Console.WriteLine("//START--------------------------------//");
-                foreach (CalendarItem item in Calendar.Items)
-                {
-                    Console.WriteLine("lineId=" + item.LineId + ", StartDate=" + item.StartDate + ",EndDate=" + item.EndDate);
-                }
-                Console.WriteLine("//END--------------------------------//");
+                ////Console.WriteLine("//START--------------------------------//");
+                //foreach (CalendarItem item in Calendar.Items)
+                //{
+                //    Console.WriteLine("lineId=" + item.LineId + ", StartDate=" + item.StartDate + ",EndDate=" + item.EndDate);
+                //}
+                //Console.WriteLine("//END--------------------------------//");
 
                 foreach (CalendarItem item in Calendar.Items)
                 {
@@ -1171,9 +1176,11 @@ namespace System.Windows.Forms.Calendar
             }
             else if (Calendar.Days != null && Calendar.Days.Length > 0)
             {
-                return Convert.ToInt32(Math.Floor(
+                var totalUnit = Calendar.Days[0].TimeUnits.Length;
+
+                return Math.Min( Convert.ToInt32(Math.Floor(
                     Convert.ToSingle(Calendar.Days[0].BodyBounds.Height) / Convert.ToSingle(TimeScaleUnitHeight)
-                    ));
+                    )), totalUnit);
             }
             else
             {
@@ -1364,7 +1371,7 @@ namespace System.Windows.Forms.Calendar
             int minuteLeft = hourLeft + hourWidth;
             int minuteWidth = hourWidth;
             int k = 0;
-
+            
             for (int i = 0; i < e.Calendar.Days[0].TimeUnits.Length; i++)
             {
                 CalendarTimeScaleUnit unit = e.Calendar.Days[0].TimeUnits[i];
@@ -1387,7 +1394,7 @@ namespace System.Windows.Forms.Calendar
 
                     if (k++ == 0 || unit.Hours == 0 || unit.Hours == 12)
                     {
-                        minutes = unit.Date.ToString("tt") + day.ToString("dd/MM/yyyy");
+                        minutes = unit.Date.ToString("tt");// +day.ToString("dd/MM/yyyy");
 
                     }
 
@@ -1398,6 +1405,7 @@ namespace System.Windows.Forms.Calendar
                     OnDrawTimeScaleMinutes(mevt);
                 }
             }
+
         }
 
         /// <summary>
@@ -1414,6 +1422,11 @@ namespace System.Windows.Forms.Calendar
         /// </summary>
         /// <param name="e">Paint Info</param>
         public virtual void OnDrawTimeScaleMinutes(CalendarRendererBoxEventArgs e)
+        {
+            DrawStandarBoxText(e);
+        }
+
+        public virtual void OnDrawDateSelected(CalendarRendererBoxEventArgs e)
         {
             DrawStandarBoxText(e);
         }
@@ -1470,7 +1483,14 @@ namespace System.Windows.Forms.Calendar
                 OnDrawDayHeaderText(devt);
             }
 
-            
+            //Console.WriteLine("this.Calendar.SelectedDate=" + this.Calendar.SelectedDate);
+            CalendarRendererBoxEventArgs sdevt = new CalendarRendererBoxEventArgs(e, new Rectangle(TimeScaleBounds.Left, TimeScaleBounds.Top, TimeScaleBounds.Width, this.DayHeaderHeight), this.Calendar.SelectedDate.ToString("dd/MM/yyyy"), TextFormatFlags.VerticalCenter);
+
+            Font selectedDateFont = new Font(e.Calendar.Font.FontFamily, e.Calendar.Font.Size * 1.1f);
+            sdevt.Font = selectedDateFont;
+            sdevt.TextColor = Color.Blue;
+
+            OnDrawDateSelected(sdevt);
 
             OnDrawDayTimeUnits(e);
             OnDrawDayTop(e);
@@ -1519,6 +1539,7 @@ namespace System.Windows.Forms.Calendar
         /// <param name="e"></param>
         public virtual void OnDrawDayTimeUnits(CalendarRendererDayEventArgs e)
         {
+
             for (int i = 0; i < e.Day.TimeUnits.Length; i++)
             {
                 CalendarTimeScaleUnit unit = e.Day.TimeUnits[i];
@@ -1526,6 +1547,7 @@ namespace System.Windows.Forms.Calendar
                 if(unit.Visible)
                     OnDrawDayTimeUnit(new CalendarRendererTimeUnitEventArgs(e, unit));
             }
+
         }
 
         /// <summary>
@@ -1613,11 +1635,17 @@ namespace System.Windows.Forms.Calendar
                     e.Graphics.SetClip(days, CombineMode.Intersect);
                     clipped = true;
                 }
-
+                
                 OnDrawItem(new CalendarRendererItemEventArgs(e, item));
 
                 if (clipped)
                     e.Graphics.SetClip(oldclip, CombineMode.Replace);
+
+                if (item.Selected)
+                {
+                    //draw date selected
+
+                }
             } 
             #endregion
 
