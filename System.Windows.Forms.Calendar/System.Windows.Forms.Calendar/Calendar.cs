@@ -294,6 +294,9 @@ namespace System.Windows.Forms.Calendar
                 return ((CalendarTimeScaleUnit)_selectedElements[0]).Date;
             }
         }
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<LineInfo> Lines
         {
             get { return lines; }
